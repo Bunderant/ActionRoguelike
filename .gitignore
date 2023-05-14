@@ -1,6 +1,9 @@
 # JetBrains Rider user specific files
 .idea/
 
+# JetBrains Rider's stupid uniqued Plugin directories
+Plugins/Developer/RiderLink/*
+
 # Visual Studio 2015 user specific files
 .vs/
 .vsconfig
