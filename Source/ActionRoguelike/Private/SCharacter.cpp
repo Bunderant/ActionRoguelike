@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInput/Public/EnhancedInputSubsystems.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -17,9 +18,14 @@ ASCharacter::ASCharacter()
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->bUsePawnControlRotation = true;
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+	bUseControllerRotationYaw = false;
 }
 
 // Called when the game starts or when spawned
@@ -43,8 +49,15 @@ void ASCharacter::Move(const FInputActionInstance& Instance)
 {
 	const FVector2D Value = Instance.GetValue().Get<FVector2D>();
 
-	AddMovementInput(GetActorForwardVector(), Value.Y);
-	AddMovementInput(GetActorRightVector(), Value.X);
+	FRotator ControlRotation = GetControlRotation();
+	ControlRotation.Pitch = 0.0f;
+	ControlRotation.Roll = 0.0f;
+
+	const FVector ForwardVector = ControlRotation.Vector();
+	const FVector RightVector = FRotationMatrix(ControlRotation).GetScaledAxis(EAxis::Y);
+
+	AddMovementInput(ForwardVector, Value.Y);
+	AddMovementInput(RightVector, Value.X);
 }
 
 void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
