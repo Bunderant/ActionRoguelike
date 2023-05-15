@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UInputAction> InputActionMoveHorizontal;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UInputAction> InputActionMoveCamera;
+
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComponent;
 
@@ -37,6 +40,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Move(const FInputActionInstance& Instance);
+	void MoveCamera(const FInputActionInstance& Instance);
 
 public:	
 	// Called every frame

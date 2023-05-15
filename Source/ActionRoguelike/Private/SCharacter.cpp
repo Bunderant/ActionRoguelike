@@ -7,6 +7,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInput/Public/EnhancedInputSubsystems.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -30,7 +31,7 @@ void ASCharacter::BeginPlay()
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
-			ensure(!InputActionMoveHorizontal.IsNull());
+			ensure(!InputMapping.IsNull());
 			
 			// TODO: MDA: Expose the mapping's priority as a global setting
 			InputSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
@@ -40,11 +41,17 @@ void ASCharacter::BeginPlay()
 
 void ASCharacter::Move(const FInputActionInstance& Instance)
 {
-	FVector2D Value = Instance.GetValue().Get<FVector2D>();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Input: %s"), *Value.ToString());
+	const FVector2D Value = Instance.GetValue().Get<FVector2D>();
 
 	AddMovementInput(GetActorForwardVector(), Value.Y);
+	AddMovementInput(GetActorRightVector(), Value.X);
+}
+
+void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
+{
+	const FVector2D Value = Instance.GetValue().Get<FVector2D>();
+	
+	AddControllerPitchInput(Value.Y);
 	AddControllerYawInput(Value.X);
 }
 
@@ -53,6 +60,21 @@ void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// -- Rotation Visualization -- //
+	const float DrawScale = 100.0f;
+	const float Thickness = 5.0f;
+
+	FVector LineStart = GetActorLocation();
+	// Offset to the right of pawn
+	LineStart += GetActorRightVector() * 100.0f;
+	// Set line end in direction of the actor's forward
+	FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
+	// Draw Actor's Direction
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
+
+	FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
+	// Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
+	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
 }
 
 // Called to bind functionality to input
@@ -61,8 +83,11 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	ensure(!InputActionMoveHorizontal.IsNull());
+	ensure(!InputActionMoveCamera.IsNull());
 
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	
 	Input->BindAction(InputActionMoveHorizontal.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Move);
+	Input->BindAction(InputActionMoveCamera.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::MoveCamera);
 }
 
