@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "SMagicProjectile.generated.h"
 
+class UProjectileMovementComponent;
+class USphereComponent;
+class UParticleSystemComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASMagicProjectile : public AActor
 {
@@ -16,6 +20,15 @@ public:
 	ASMagicProjectile();
 
 protected:
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* SphereComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UProjectileMovementComponent* MovementComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UParticleSystemComponent* EffectComponent;
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
