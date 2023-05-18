@@ -68,6 +68,16 @@ void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
 	AddControllerYawInput(Value.X);
 }
 
+void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
+{
+	FTransform SpawnTransformMatrix = FTransform(GetActorRotation(), GetActorLocation());
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransformMatrix, SpawnParams);
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
@@ -97,10 +107,12 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	ensure(!InputActionMoveHorizontal.IsNull());
 	ensure(!InputActionMoveCamera.IsNull());
+	ensure(!InputActionPrimaryAttack.IsNull());
 
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	
 	Input->BindAction(InputActionMoveHorizontal.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Move);
 	Input->BindAction(InputActionMoveCamera.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::MoveCamera);
+	Input->BindAction(InputActionPrimaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
 }
 

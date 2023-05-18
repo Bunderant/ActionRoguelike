@@ -21,6 +21,10 @@ public:
 
 protected:
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
+	
+
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
@@ -29,6 +33,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UInputAction> InputActionMoveCamera;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UInputAction> InputActionPrimaryAttack;
+	
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComponent;
@@ -41,6 +49,7 @@ protected:
 
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);
+	void PrimaryAttack(const FInputActionInstance& Instance);
 
 public:	
 	// Called every frame
