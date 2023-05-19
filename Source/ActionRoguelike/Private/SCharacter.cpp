@@ -85,17 +85,18 @@ void ASCharacter::Tick(float DeltaTime)
 
 	// -- Rotation Visualization -- //
 	constexpr float DrawScale = 100.0f;
+	constexpr float DrawOffset = 100.0f;
 	constexpr float Thickness = 5.0f;
 
 	FVector LineStart = GetActorLocation();
 	// Offset to the right of pawn
-	LineStart += GetActorRightVector() * 100.0f;
+	LineStart += GetActorRightVector() * DrawOffset;
 	// Set line end in direction of the actor's forward
-	const FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * 100.0f);
+	const FVector ActorDirection_LineEnd = LineStart + (GetActorForwardVector() * DrawScale);
 	// Draw Actor's Direction
 	DrawDebugDirectionalArrow(GetWorld(), LineStart, ActorDirection_LineEnd, DrawScale, FColor::Yellow, false, 0.0f, 0, Thickness);
 
-	const FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * 100.0f);
+	const FVector ControllerDirection_LineEnd = LineStart + (GetControlRotation().Vector() * DrawScale);
 	// Draw 'Controller' Rotation ('PlayerController' that 'possessed' this character)
 	DrawDebugDirectionalArrow(GetWorld(), LineStart, ControllerDirection_LineEnd, DrawScale, FColor::Green, false, 0.0f, 0, Thickness);
 }
