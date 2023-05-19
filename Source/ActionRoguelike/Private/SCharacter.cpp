@@ -70,7 +70,9 @@ void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
 
 void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 {
-	FTransform SpawnTransformMatrix = FTransform(GetActorRotation(), GetActorLocation());
+	FTransform SpawnTransformMatrix = FTransform(
+		GetActorRotation(),
+		GetMesh()->GetSocketLocation("Muzzle_01"));
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
