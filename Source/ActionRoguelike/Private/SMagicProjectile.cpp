@@ -31,6 +31,22 @@ ASMagicProjectile::ASMagicProjectile()
 void ASMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::HandleOverlap);
+	SphereComponent->OnComponentHit.AddDynamic(this, &ASMagicProjectile::HandleHit);
+}
+
+void ASMagicProjectile::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OVERLAP"));
+}
+
+void ASMagicProjectile::HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+                                  FVector NormalImpulse, const FHitResult& Hit)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HIT"));
+	DrawDebugSphere(GetWorld(), Hit.Location, 30.0, 32, FColor(0, 255, 0), false, 3.0);
 }
 
 // Called every frame
