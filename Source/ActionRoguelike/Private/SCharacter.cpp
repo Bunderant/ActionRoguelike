@@ -80,6 +80,11 @@ void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransformMatrix, SpawnParams);
 }
 
+void ASCharacter::Jump(const FInputActionInstance& Instance)
+{
+	Super::Jump();
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
@@ -111,11 +116,13 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	ensure(!InputActionMoveHorizontal.IsNull());
 	ensure(!InputActionMoveCamera.IsNull());
 	ensure(!InputActionPrimaryAttack.IsNull());
+	ensure(!InputActionJump.IsNull());
 
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	
 	Input->BindAction(InputActionMoveHorizontal.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Move);
 	Input->BindAction(InputActionMoveCamera.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::MoveCamera);
 	Input->BindAction(InputActionPrimaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
+	Input->BindAction(InputActionJump.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 }
 

@@ -36,6 +36,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UInputAction> InputActionPrimaryAttack;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UInputAction> InputActionJump;
 	
 
 	UPROPERTY(VisibleAnywhere)
@@ -50,6 +53,7 @@ protected:
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
+	void Jump(const FInputActionInstance& Instance);
 
 public:	
 	// Called every frame
