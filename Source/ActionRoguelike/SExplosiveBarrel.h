@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "SExplosiveBarrel.generated.h"
 
+class URadialForceComponent;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASExplosiveBarrel : public AActor
 {
@@ -27,6 +29,9 @@ private:
 	
 	UPROPERTY(Category=Rendering, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> Mesh;
+
+	UPROPERTY(Category=Rendering, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<URadialForceComponent> RadialForceComp;
 
 	UFUNCTION()
 	void OnHit(
