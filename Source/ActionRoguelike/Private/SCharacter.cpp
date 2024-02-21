@@ -17,6 +17,9 @@ ASCharacter::ASCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SpawnProjectile_Delay = 0.2f;
+	SpawnProjectile_Socket = "Muzzle_01";
+
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->bUsePawnControlRotation = true;
@@ -73,9 +76,16 @@ void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
 
 void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 {
+	PlayAnimMontage(AttackAnim);
+	
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_SpawnProjectile, SpawnProjectile_Delay);
+}
+
+void ASCharacter::PrimaryAttack_SpawnProjectile() const
+{
 	FTransform SpawnTransformMatrix = FTransform(
 		GetActorRotation(),
-		GetMesh()->GetSocketLocation("Muzzle_01"));
+		GetMesh()->GetSocketLocation(SpawnProjectile_Socket));
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;

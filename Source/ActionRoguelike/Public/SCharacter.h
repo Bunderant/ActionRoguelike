@@ -21,34 +21,46 @@ public:
 	ASCharacter();
 
 protected:
-
-	UPROPERTY(EditAnywhere)
+	
+	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TObjectPtr<UAnimMontage> AttackAnim;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	FTimerHandle TimerHandle_PrimaryAttack;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	float SpawnProjectile_Delay;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	FName SpawnProjectile_Socket;
 	
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionMoveHorizontal;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionMoveCamera;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionPrimaryAttack;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionJump;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionInteract;
 	
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
 	UPROPERTY(VisibleAnywhere)
@@ -60,6 +72,7 @@ protected:
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
+	void PrimaryAttack_SpawnProjectile() const;
 	void Jump(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
 
