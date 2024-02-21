@@ -26,21 +26,28 @@ void USInteractionComponent::PrimaryInteract()
 
 	GetOwner()->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
-	
-	FHitResult Hit;
-	bool bDidHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
-	AActor* HitActor = Hit.GetActor();
 
-	// Make sure to null check the actor before accessing it. It's possible for it to be null sometimes even when
-	// bDidHit is true.
-	bDidHit &= HitActor && HitActor->Implements<USGameplayInterface>();
+	float SphereRadius = 30.0f;
+	TArray<FHitResult> Hits;
+	bool bDidHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(SphereRadius));
 
-	if (bDidHit)
+	for (auto HitResult : Hits)
 	{
-		ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(GetOwner()));
+		AActor* HitActor = HitResult.GetActor();
+		
+		// Make sure to null check the actor before accessing it. It's possible for it to be null sometimes even when
+		// bDidHit is true.
+		bDidHit &= HitActor && HitActor->Implements<USGameplayInterface>();
+
+		if (bDidHit)
+		{
+			DrawDebugSphere(GetWorld(), HitResult.Location, SphereRadius, 8, FColor::Green, false, 2.0f, 0, 2.0f);
+			ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(GetOwner()));
+			break;
+		}
 	}
 
-	DrawDebugLine(GetWorld(), EyeLocation, End, bDidHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2);
+	DrawDebugLine(GetWorld(), EyeLocation, End, bDidHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2.0f);
 }
 
 
