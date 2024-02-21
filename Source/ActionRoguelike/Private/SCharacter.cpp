@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInput/Public/EnhancedInputSubsystems.h"
 #include "DrawDebugHelpers.h"
+#include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -22,6 +23,8 @@ ASCharacter::ASCharacter()
 	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	InteractionComponent = CreateDefaultSubobject<USInteractionComponent>("Interaction");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -85,6 +88,11 @@ void ASCharacter::Jump(const FInputActionInstance& Instance)
 	Super::Jump();
 }
 
+void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
+{
+	InteractionComponent->PrimaryInteract();
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
@@ -117,6 +125,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	ensure(!InputActionMoveCamera.IsNull());
 	ensure(!InputActionPrimaryAttack.IsNull());
 	ensure(!InputActionJump.IsNull());
+	ensure(!InputActionInteract.IsNull());
 
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	
@@ -124,5 +133,6 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionMoveCamera.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::MoveCamera);
 	Input->BindAction(InputActionPrimaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
 	Input->BindAction(InputActionJump.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Jump);
+	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
 }
 

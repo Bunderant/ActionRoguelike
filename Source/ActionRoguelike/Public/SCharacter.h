@@ -9,6 +9,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class USInteractionComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
@@ -39,13 +40,19 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UInputAction> InputActionJump;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UInputAction> InputActionInteract;
 	
 
 	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComponent;
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* CameraComponent;
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USInteractionComponent> InteractionComponent;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -54,6 +61,7 @@ protected:
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
 	void Jump(const FInputActionInstance& Instance);
+	void HandleInteractInput(const FInputActionInstance& Instance);
 
 public:	
 	// Called every frame
