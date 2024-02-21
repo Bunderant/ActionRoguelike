@@ -28,13 +28,19 @@ void USInteractionComponent::PrimaryInteract()
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
 	
 	FHitResult Hit;
-	GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
-
+	bool bDidHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
 	AActor* HitActor = Hit.GetActor();
-	if (HitActor && HitActor->Implements<USGameplayInterface>())
+
+	// Make sure to null check the actor before accessing it. It's possible for it to be null sometimes even when
+	// bDidHit is true.
+	bDidHit &= HitActor && HitActor->Implements<USGameplayInterface>();
+
+	if (bDidHit)
 	{
 		ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(GetOwner()));
 	}
+
+	DrawDebugLine(GetWorld(), EyeLocation, End, bDidHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2);
 }
 
 
