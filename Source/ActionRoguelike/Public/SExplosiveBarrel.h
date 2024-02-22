@@ -25,6 +25,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void Explode();
+
 private:
 	
 	UPROPERTY(Category=Rendering, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))

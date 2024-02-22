@@ -16,10 +16,14 @@ public:
 	// Sets default values for this actor's properties
 	ASItemChest();
 
-	UPROPERTY(EditAnywhere)
+	UFUNCTION(BlueprintGetter)
+	float GetOpenLidPitch() const;
+	
+	UPROPERTY(EditAnywhere, BlueprintGetter=GetOpenLidPitch, Category="Interact Config")
 	float OpenLidPitch;
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -33,6 +37,6 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Rendering", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UStaticMeshComponent> BaseMesh;
 
-	UPROPERTY(VisibleAnywhere, Category="Rendering", meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Rendering", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UStaticMeshComponent> LidMesh;
 };
