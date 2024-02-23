@@ -57,6 +57,6 @@ void ASExplosiveBarrel::Explode()
 void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                               FVector NormalImpulse, const FHitResult& Hit)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit Exploding Barrel, triggering explosion..."));
+	DrawDebugString(GetWorld(), Hit.ImpactPoint, *FString::Printf(TEXT("HIT @%f"), GetWorld()->TimeSeconds), nullptr, FColor::Cyan, 2.0f);
 	Explode();
 }
