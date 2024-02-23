@@ -27,8 +27,6 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComp->ImpulseStrength = 1000.0f;
 	RadialForceComp->DestructibleDamage = 1.0f;
 	RadialForceComp->Falloff = RIF_Linear;
-	RadialForceComp->AddCollisionChannelToAffect(ECC_PhysicsBody);
-	RadialForceComp->AddCollisionChannelToAffect(ECC_Destructible);
 	RadialForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
