@@ -18,6 +18,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComp = CreateDefaultSubobject<URadialForceComponent>("Radial Force");
 	
 	RadialForceComp->SetupAttachment(Mesh);
+	RadialForceComp->bAutoActivate = false;
+	RadialForceComp->SetActive(false);
 	RadialForceComp->SetRelativeLocation(FVector(0, 0, 70));
 	RadialForceComp->bIgnoreOwningActor = true;
 	RadialForceComp->bImpulseVelChange = true;
