@@ -72,8 +72,8 @@ protected:
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
-	void PrimaryAttack_SpawnProjectile() const;
-	void Jump(const FInputActionInstance& Instance);
+	void PrimaryAttack_SpawnProjectile();
+	void HandleJumpInput(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
 
 public:	

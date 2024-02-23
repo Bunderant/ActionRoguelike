@@ -81,7 +81,7 @@ void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_SpawnProjectile, SpawnProjectile_Delay);
 }
 
-void ASCharacter::PrimaryAttack_SpawnProjectile() const
+void ASCharacter::PrimaryAttack_SpawnProjectile()
 {
 	FTransform SpawnTransformMatrix = FTransform(
 		GetActorRotation(),
@@ -89,11 +89,12 @@ void ASCharacter::PrimaryAttack_SpawnProjectile() const
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransformMatrix, SpawnParams);
 }
 
-void ASCharacter::Jump(const FInputActionInstance& Instance)
+void ASCharacter::HandleJumpInput(const FInputActionInstance& Instance)
 {
 	Super::Jump();
 }
