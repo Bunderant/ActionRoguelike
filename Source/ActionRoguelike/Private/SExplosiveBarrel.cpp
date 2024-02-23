@@ -30,12 +30,17 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
+void ASExplosiveBarrel::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	Mesh->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
+}
+
 // Called when the game starts or when spawned
 void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Mesh->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
 }
 
 // Called every frame
