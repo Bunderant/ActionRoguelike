@@ -83,9 +83,17 @@ void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 
 void ASCharacter::PrimaryAttack_SpawnProjectile()
 {
-	FTransform SpawnTransformMatrix = FTransform(
-		GetActorRotation(),
-		GetMesh()->GetSocketLocation(SpawnProjectile_Socket));
+	FHitResult HitResult;
+
+	const FVector HitTraceStart = CameraComponent->GetComponentLocation();
+	const FVector HitTraceEnd = HitTraceStart + CameraComponent->GetForwardVector() * 10000;
+
+	const FVector SpawnStart = GetMesh()->GetSocketLocation(SpawnProjectile_Socket);
+	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "Projectile")
+		? HitResult.ImpactPoint
+		: HitTraceEnd;
+	
+	FTransform SpawnTransformMatrix = FTransform((SpawnEnd - SpawnStart).ToOrientationRotator(), SpawnStart);
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
