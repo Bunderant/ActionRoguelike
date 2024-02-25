@@ -78,10 +78,27 @@ void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 {
 	PlayAnimMontage(AttackAnim);
 	
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_SpawnProjectile, SpawnProjectile_Delay);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::SpawnPrimaryProjectile, SpawnProjectile_Delay);
 }
 
-void ASCharacter::PrimaryAttack_SpawnProjectile()
+void ASCharacter::SecondaryAttack(const FInputActionInstance& Instance)
+{
+	PlayAnimMontage(AttackAnim);
+	
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::SpawnSecondaryProjectile, SpawnProjectile_Delay);
+}
+
+void ASCharacter::SpawnPrimaryProjectile()
+{
+	SpawnProjectile(PrimaryProjectileClass);
+}
+
+void ASCharacter::SpawnSecondaryProjectile()
+{
+	SpawnProjectile(SecondaryProjectileClass);
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
 	FHitResult HitResult;
 
@@ -143,6 +160,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	ensure(!InputActionMoveHorizontal.IsNull());
 	ensure(!InputActionMoveCamera.IsNull());
 	ensure(!InputActionPrimaryAttack.IsNull());
+	ensure(!InputActionSecondaryAttack.IsNull());
 	ensure(!InputActionJump.IsNull());
 	ensure(!InputActionInteract.IsNull());
 
@@ -151,6 +169,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionMoveHorizontal.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Move);
 	Input->BindAction(InputActionMoveCamera.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::MoveCamera);
 	Input->BindAction(InputActionPrimaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
+	Input->BindAction(InputActionSecondaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::SecondaryAttack);
 	Input->BindAction(InputActionJump.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
 }

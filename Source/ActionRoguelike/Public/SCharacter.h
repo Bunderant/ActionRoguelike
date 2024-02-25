@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "SCharacter.generated.h"
 
+class ASProjectileBase;
 class USpringArmComponent;
 class UCameraComponent;
 class USInteractionComponent;
@@ -23,13 +24,19 @@ public:
 protected:
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TSubclassOf<AActor> SecondaryProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TObjectPtr<UAnimMontage> AttackAnim;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
 	FTimerHandle TimerHandle_PrimaryAttack;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	FTimerHandle TimerHandle_SecondaryAttack;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
 	float SpawnProjectile_Delay;
@@ -49,6 +56,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionPrimaryAttack;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TSoftObjectPtr<UInputAction> InputActionSecondaryAttack;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionJump;
@@ -72,7 +82,10 @@ protected:
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
-	void PrimaryAttack_SpawnProjectile();
+	void SecondaryAttack(const FInputActionInstance& Instance);
+	void SpawnPrimaryProjectile();
+	void SpawnSecondaryProjectile();
+	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void HandleJumpInput(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
 
