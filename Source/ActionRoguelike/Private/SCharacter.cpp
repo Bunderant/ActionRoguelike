@@ -157,12 +157,19 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	ensure(!InputActionMoveHorizontal.IsNull());
-	ensure(!InputActionMoveCamera.IsNull());
-	ensure(!InputActionPrimaryAttack.IsNull());
-	ensure(!InputActionSecondaryAttack.IsNull());
-	ensure(!InputActionJump.IsNull());
-	ensure(!InputActionInteract.IsNull());
+	checkCode(
+		if (InputActionMoveHorizontal.IsNull() ||
+			InputActionMoveCamera.IsNull() ||
+			InputActionPrimaryAttack.IsNull() ||
+			InputActionSecondaryAttack.IsNull() ||
+			InputActionJump.IsNull() ||
+			InputActionInteract.IsNull())
+		{
+			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.0f, FColor::Red, "All InputAction assets must be assigned in Blueprints that inherit SCharacter.");
+			UE_LOG(LogTemp, Error, TEXT("All InputAction assets must be assigned in Blueprints that inherit SCharacter."));
+			return;
+		}
+	);
 
 	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	
