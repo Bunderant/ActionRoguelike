@@ -13,6 +13,8 @@ USAttributeComponent::USAttributeComponent()
 bool USAttributeComponent::ApplyHealthChange(const float Delta)
 {
 	Health += Delta;
+
+	OnAttributeChanged.Broadcast(nullptr, this, Health, Delta);
 	
 	return true;
 }
