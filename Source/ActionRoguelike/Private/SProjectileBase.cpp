@@ -16,6 +16,8 @@ ASProjectileBase::ASProjectileBase()
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	SphereComponent->SetCollisionProfileName("Projectile");
+	SphereComponent->bAutoActivate = false;
+	SphereComponent->SetActive(false);
 	
 	RootComponent = SphereComponent;
 
@@ -37,7 +39,9 @@ void ASProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Activate the component after ignoring the instigator to avoid an immediate collision as it spawns
 	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
+	SphereComponent->Activate();
 }
 
 void ASProjectileBase::PostInitializeComponents()
