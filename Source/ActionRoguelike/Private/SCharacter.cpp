@@ -85,7 +85,7 @@ void ASCharacter::SecondaryAttack(const FInputActionInstance& Instance)
 {
 	PlayAnimMontage(AttackAnim);
 	
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::SpawnSecondaryProjectile, SpawnProjectile_Delay);
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SpawnSecondaryProjectile, SpawnProjectile_Delay);
 }
 
 void ASCharacter::SpawnPrimaryProjectile()

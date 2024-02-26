@@ -26,6 +26,7 @@ ASProjectileBase::ASProjectileBase()
 	MovementComponent->InitialSpeed = 1000.0f;
 	MovementComponent->bRotationFollowsVelocity = true;
 	MovementComponent->bInitialVelocityInLocalSpace = true;
+	MovementComponent->ProjectileGravityScale = 0;
 
 	bShouldBindOverlap = true;
 	bShouldBindHit = true;
@@ -35,6 +36,8 @@ ASProjectileBase::ASProjectileBase()
 void ASProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 }
 
 void ASProjectileBase::PostInitializeComponents()

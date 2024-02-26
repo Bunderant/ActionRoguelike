@@ -32,10 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TObjectPtr<UAnimMontage> AttackAnim;
 
-	UPROPERTY(EditAnywhere, Category="Attack")
 	FTimerHandle TimerHandle_PrimaryAttack;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
 	FTimerHandle TimerHandle_SecondaryAttack;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
