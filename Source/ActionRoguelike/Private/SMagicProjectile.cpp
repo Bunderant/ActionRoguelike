@@ -3,6 +3,8 @@
 
 #include "SMagicProjectile.h"
 
+#include "SAttributeComponent.h"
+
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
@@ -16,8 +18,23 @@ void ASMagicProjectile::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ASMagicProjectile::HandleProjectileOverlap_Implementation(UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	if (!OtherActor) return;
+	
+	USAttributeComponent* HealthComponent = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+	
+	if (!HealthComponent) return;
+
+	HealthComponent->ApplyHealthChange(-20.0f);
+
+	Destroy();
+}
+
 void ASMagicProjectile::HandleProjectileHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-                                  FVector NormalImpulse, const FHitResult& Hit)
+                                                           FVector NormalImpulse, const FHitResult& Hit)
 {
 	UE_LOG(LogTemp, Warning, TEXT("HIT"));
 	DrawDebugSphere(GetWorld(), Hit.Location, 30.0, 32, FColor(0, 255, 0), false, 3.0);

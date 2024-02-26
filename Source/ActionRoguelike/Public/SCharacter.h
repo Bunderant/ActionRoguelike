@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "SCharacter.generated.h"
 
+class USAttributeComponent;
 class ASProjectileBase;
 class USpringArmComponent;
 class UCameraComponent;
@@ -22,6 +23,8 @@ public:
 	ASCharacter();
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	TObjectPtr<USAttributeComponent> HealthComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> PrimaryProjectileClass;
