@@ -102,10 +102,15 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
 	FHitResult HitResult;
 
-	const FVector HitTraceStart = CameraComponent->GetComponentLocation();
+	FVector HitTraceStart = CameraComponent->GetComponentLocation();
 	const FVector HitTraceEnd = HitTraceStart + CameraComponent->GetForwardVector() * 10000;
 
 	const FVector SpawnStart = GetMesh()->GetSocketLocation(SpawnProjectile_Socket);
+	
+	// Move the hit trace start point up a bit, so it starts from the center of the screen, but on the plane of the
+	// spawn start location
+	HitTraceStart = FVector::PointPlaneProject(HitTraceStart, SpawnStart, CameraComponent->GetForwardVector());
+	
 	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "Projectile")
 		? HitResult.ImpactPoint
 		: HitTraceEnd;
