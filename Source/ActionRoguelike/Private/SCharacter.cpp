@@ -113,8 +113,11 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 	// Move the hit trace start point up a bit, so it starts from the center of the screen, but on the plane of the
 	// spawn start location
 	HitTraceStart = FVector::PointPlaneProject(HitTraceStart, SpawnStart, CameraComponent->GetForwardVector());
+
+	FCollisionQueryParams QueryParams = FCollisionQueryParams::DefaultQueryParam;
+	QueryParams.AddIgnoredActor(this);
 	
-	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "BlockAllObjects")
+	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "BlockAllObjects", QueryParams)
 		? HitResult.ImpactPoint
 		: HitTraceEnd;
 	
