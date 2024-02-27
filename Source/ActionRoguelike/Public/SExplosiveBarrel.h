@@ -31,6 +31,9 @@ public:
 	void Explode();
 
 private:
+
+	FTimerHandle ExplodeTimerHandle;
+	bool bHasAlreadyExploded;
 	
 	UPROPERTY(Category=Rendering, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> Mesh;

@@ -3,6 +3,7 @@
 
 #include "SExplosiveBarrel.h"
 
+#include "SAttributeComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
 
@@ -51,12 +52,47 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 
 void ASExplosiveBarrel::Explode()
 {
+	if (bHasAlreadyExploded)
+	{
+		return;
+	}
+	bHasAlreadyExploded = true;
+	
 	RadialForceComp->FireImpulse();
+
+	TArray<FOverlapResult> HitResult;
+	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(RadialForceComp->Radius * 0.3333f);
+
+	bool bDidHit = GetWorld()->OverlapMultiByProfile(HitResult, RadialForceComp->GetComponentLocation(), FQuat::Identity, "Explosion", CollisionShape);
+	if (!bDidHit)
+	{
+		return;
+	}
+
+	TArray<USAttributeComponent*, FDefaultAllocator> AttributeComponents;
+	for (auto Result : HitResult)
+	{
+		AActor* HitActor = Result.GetActor();
+		if (!HitActor)
+		{
+			continue;
+		}
+
+		HitActor->GetComponents(USAttributeComponent::StaticClass(), AttributeComponents);
+		for (USAttributeComponent* HealthComponent : AttributeComponents)
+		{
+			HealthComponent->ApplyHealthChange(-50);
+		}
+	}
+
+	Destroy();
 }
 
 void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                               FVector NormalImpulse, const FHitResult& Hit)
 {
 	DrawDebugString(GetWorld(), Hit.ImpactPoint, *FString::Printf(TEXT("HIT @%f"), GetWorld()->TimeSeconds), nullptr, FColor::Cyan, 2.0f);
+
 	Explode();
+	
 }
