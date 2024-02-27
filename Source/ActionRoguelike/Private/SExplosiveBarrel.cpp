@@ -69,6 +69,11 @@ void ASExplosiveBarrel::Explode()
 		return;
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("Overlapped %d objects"), HitResult.Num());
+	
+	TSet<AActor*> ProcessedActors;
+	bool bIsAlreadyProcessed = false;
+
 	TArray<USAttributeComponent*, FDefaultAllocator> AttributeComponents;
 	for (auto Result : HitResult)
 	{
@@ -78,7 +83,16 @@ void ASExplosiveBarrel::Explode()
 			continue;
 		}
 
+		bIsAlreadyProcessed = false;
+		ProcessedActors.Add(HitActor, &bIsAlreadyProcessed);
+		if (bIsAlreadyProcessed)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Already processed actor %s, skipping..."), *(HitActor->GetName()));
+			continue;
+		}
+
 		HitActor->GetComponents(USAttributeComponent::StaticClass(), AttributeComponents);
+		UE_LOG(LogTemp, Warning, TEXT("Hit actor %s with %d attributes"), *(HitActor->GetName()), AttributeComponents.Num())
 		for (USAttributeComponent* HealthComponent : AttributeComponents)
 		{
 			HealthComponent->ApplyHealthChange(-50);
