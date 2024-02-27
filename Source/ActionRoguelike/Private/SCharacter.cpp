@@ -114,7 +114,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 	// spawn start location
 	HitTraceStart = FVector::PointPlaneProject(HitTraceStart, SpawnStart, CameraComponent->GetForwardVector());
 	
-	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "Projectile")
+	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "BlockAllObjects")
 		? HitResult.ImpactPoint
 		: HitTraceEnd;
 	
