@@ -50,12 +50,9 @@ void ASTeleportProjectile::StartTeleport()
 	TeleportParticles->Activate();
 	MovementComponent->StopMovementImmediately();
 
-	// Invalidate the "lifetime" handle explicitly in case the teleportation was triggered by a hit instead of the timer
+	// Clear the "lifetime" handle explicitly in case the teleportation was triggered by a hit instead of the timer
 	// expiring. 
-	if (TimerHandle_Lifetime.IsValid())
-	{
-		TimerHandle_Lifetime.Invalidate();
-	}
+	GetWorldTimerManager().ClearTimer(TimerHandle_Lifetime);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_Delay, this, &ASTeleportProjectile::FinishTeleport, Delay);
 }
