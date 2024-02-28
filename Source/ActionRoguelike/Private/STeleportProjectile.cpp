@@ -59,7 +59,13 @@ void ASTeleportProjectile::StartTeleport()
 
 void ASTeleportProjectile::FinishTeleport()
 {
-	GetInstigator()->SetActorLocation(GetActorLocation());
+	AActor* InstigatorActor = GetInstigator();
+	
+	if (ensure(InstigatorActor))
+	{
+		InstigatorActor->TeleportTo(GetActorLocation(), InstigatorActor->GetActorRotation());
+	}
+	
 	Destroy();
 }
 
