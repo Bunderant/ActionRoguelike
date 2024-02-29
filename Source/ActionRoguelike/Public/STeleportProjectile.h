@@ -11,9 +11,6 @@ class ACTIONROGUELIKE_API ASTeleportProjectile : public ASProjectileBase
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, Category="Projectile", meta=(AllowPrivateAccess="true"))
-	TObjectPtr<UParticleSystemComponent> TeleportParticles;
-	
 	UPROPERTY(EditAnywhere, Category="Config", meta=(AllowPrivateAccess="true"))
 	float Lifetime;
 
@@ -32,11 +29,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-protected:
 	virtual void HandleProjectileHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 
 private:

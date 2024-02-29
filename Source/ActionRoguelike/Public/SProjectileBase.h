@@ -34,10 +34,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UParticleSystemComponent* EffectComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UParticleSystem> HitParticleSystemAsset;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	
 	virtual void PostInitializeComponents() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta=(DisplayName="Handle Projectile Overlap"))
@@ -45,6 +48,8 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta=(DisplayName="Handle Projectile Hit"))
 	void HandleProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	void DefaultHit(const AActor* OtherActor, const FHitResult& Hit);
 
 public:
 	// Called every frame

@@ -5,20 +5,13 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 
 // Sets default values
 ASTeleportProjectile::ASTeleportProjectile()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	TeleportParticles = CreateDefaultSubobject<UParticleSystemComponent>("Teleport Particles");
-	TeleportParticles->SetupAttachment(SphereComponent);
-	TeleportParticles->bAutoActivate = false;
-	TeleportParticles->SetActive(false);
-
 	Lifetime = 0.5f;
 	Delay = 0.2f;
 }
@@ -31,12 +24,6 @@ void ASTeleportProjectile::BeginPlay()
 	GetWorldTimerManager().SetTimer(TimerHandle_Lifetime, this, &ASTeleportProjectile::StartTeleport, Lifetime);
 }
 
-// Called every frame
-void ASTeleportProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void ASTeleportProjectile::HandleProjectileHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -45,9 +32,10 @@ void ASTeleportProjectile::HandleProjectileHit_Implementation(UPrimitiveComponen
 
 void ASTeleportProjectile::StartTeleport()
 {
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystemAsset, GetActorLocation(), GetActorRotation());
+	
 	SphereComponent->Deactivate();
 	EffectComponent->Deactivate();
-	TeleportParticles->Activate();
 	MovementComponent->StopMovementImmediately();
 
 	// Clear the "lifetime" handle explicitly in case the teleportation was triggered by a hit instead of the timer
@@ -61,7 +49,7 @@ void ASTeleportProjectile::FinishTeleport()
 {
 	AActor* InstigatorActor = GetInstigator();
 	
-	if (ensure(InstigatorActor))
+	if (ensureAlways(InstigatorActor))
 	{
 		InstigatorActor->TeleportTo(GetActorLocation(), InstigatorActor->GetActorRotation());
 	}

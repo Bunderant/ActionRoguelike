@@ -3,8 +3,11 @@
 
 #include "SProjectileBase.h"
 
+#include "SAttributeComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Particles/ParticleSystemComponent.h"
 
 
@@ -60,16 +63,40 @@ void ASProjectileBase::PostInitializeComponents()
 }
 
 void ASProjectileBase::HandleProjectileOverlap_Implementation(UPrimitiveComponent* OverlappedComponent,
-	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	const FHitResult& SweepResult)
+                                                              AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                                              const FHitResult& SweepResult)
 {
-	unimplemented();
+	DefaultHit(OtherActor, SweepResult);
 }
 
 void ASProjectileBase::HandleProjectileHit_Implementation(UPrimitiveComponent* HitComponent, AActor* OtherActor,
                                                           UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	unimplemented();
+	DefaultHit(OtherActor, Hit);
+}
+
+void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hit)
+{
+	if (!OtherActor || OtherActor == GetInstigator())
+	{
+		return;
+	}
+	
+	USAttributeComponent* HealthComponent = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+	if (HealthComponent)
+	{
+		HealthComponent->ApplyHealthChange(-20.0f);
+	}
+
+	const FVector Location = Hit.bBlockingHit
+		? Hit.ImpactPoint
+		: GetActorLocation();
+	
+	const FRotator Rotation = UKismetMathLibrary::MakeRotFromX(Hit.ImpactNormal);
+	
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystemAsset, Location, Rotation);
+
+	Destroy();
 }
 
 // Called every frame
