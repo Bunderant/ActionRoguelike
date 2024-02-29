@@ -4,6 +4,7 @@
 #include "SProjectileBase.h"
 
 #include "SAttributeComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -45,6 +46,8 @@ void ASProjectileBase::BeginPlay()
 	// Activate the component after ignoring the instigator to avoid an immediate collision as it spawns
 	SphereComponent->IgnoreActorWhenMoving(GetInstigator(), true);
 	SphereComponent->Activate();
+
+	AudioComponent = UGameplayStatics::SpawnSoundAttached(Sound, SphereComponent);
 }
 
 void ASProjectileBase::PostInitializeComponents()
@@ -59,6 +62,17 @@ void ASProjectileBase::PostInitializeComponents()
 	if (bShouldBindHit)
 	{
 		SphereComponent->OnComponentHit.AddDynamic(this, &ASProjectileBase::HandleProjectileHit);
+	}
+}
+
+void ASProjectileBase::Destroyed()
+{
+	Super::Destroyed();
+
+	// "Destroyed" is called from the editor as well as Gameplay, so make sure the component has been created
+	if (AudioComponent)
+	{
+		AudioComponent->SetTriggerParameter("Explode");
 	}
 }
 
