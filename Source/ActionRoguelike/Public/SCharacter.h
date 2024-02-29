@@ -22,6 +22,8 @@ public:
 	// Sets default values for this character's properties
 	ASCharacter();
 
+	virtual void PostInitializeComponents() override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	TObjectPtr<USAttributeComponent> HealthComponent;
@@ -88,6 +90,9 @@ protected:
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void HandleJumpInput(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
+
+	UFUNCTION()
+	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);
 
 public:	
 	// Called every frame

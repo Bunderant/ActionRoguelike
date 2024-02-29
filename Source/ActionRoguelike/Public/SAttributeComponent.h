@@ -23,6 +23,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="Attribute")
 	FOnAttributeChanged OnAttributeChanged;
 
+	UFUNCTION(BlueprintCallable)
+	bool IsAlive() const;
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))

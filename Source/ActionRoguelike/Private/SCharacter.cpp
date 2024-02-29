@@ -37,6 +37,13 @@ ASCharacter::ASCharacter()
 	bUseControllerRotationYaw = false;
 }
 
+void ASCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	HealthComponent->OnAttributeChanged.AddDynamic(this, &ASCharacter::HandleHealthChanged);
+}
+
 // Called when the game starts or when spawned
 void ASCharacter::BeginPlay()
 {
@@ -138,6 +145,23 @@ void ASCharacter::HandleJumpInput(const FInputActionInstance& Instance)
 void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
 {
 	InteractionComponent->PrimaryInteract();
+}
+
+void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
+	float Delta)
+{
+	if (Value <= 0.0f && Delta < 0.0f)
+	{
+		if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
+		{
+			// Remove the input mapping context if it hasn't been done already.
+			if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+				InputSystem->HasMappingContext(InputMapping.Get()))
+			{
+				InputSystem->RemoveMappingContext(InputMapping.Get());
+			}
+		}
+	}
 }
 
 // Called every frame
