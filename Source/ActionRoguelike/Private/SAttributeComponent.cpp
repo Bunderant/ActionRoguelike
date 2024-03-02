@@ -8,20 +8,21 @@
 USAttributeComponent::USAttributeComponent()
 {
 	Health = 100.0f;
+	MaxHealth = 100.0f;
 }
 
 bool USAttributeComponent::ApplyHealthChange(const float Delta)
 {
 	float PreviousValue = Health;
 	
-	Health += Delta;
-	if (Health < 0.0f)
+	Health = FMath::Clamp(Health + Delta, 0, MaxHealth);
+
+	if (FMath::IsNearlyEqual(PreviousValue,Health))
 	{
-		Health = 0.0f;
+		return false;
 	}
 
 	OnAttributeChanged.Broadcast(nullptr, this, Health, Health - PreviousValue);
-	
 	return true;
 }
 

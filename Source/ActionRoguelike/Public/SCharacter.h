@@ -35,9 +35,6 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health")
 	TObjectPtr<USAttributeComponent> HealthComponent;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health")
-	TObjectPtr<USAttributeComponent> HealthMax;
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> PrimaryProjectileClass;

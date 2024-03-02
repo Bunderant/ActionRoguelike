@@ -31,7 +31,6 @@ ASCharacter::ASCharacter()
 	InteractionComponent = CreateDefaultSubobject<USInteractionComponent>("Interaction");
 
 	HealthComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("Health Component"));
-	HealthMax = CreateDefaultSubobject<USAttributeComponent>(TEXT("Health Max"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
