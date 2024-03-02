@@ -12,9 +12,15 @@ USAttributeComponent::USAttributeComponent()
 
 bool USAttributeComponent::ApplyHealthChange(const float Delta)
 {
+	float PreviousValue = Health;
+	
 	Health += Delta;
+	if (Health < 0.0f)
+	{
+		Health = 0.0f;
+	}
 
-	OnAttributeChanged.Broadcast(nullptr, this, Health, Delta);
+	OnAttributeChanged.Broadcast(nullptr, this, Health, Health - PreviousValue);
 	
 	return true;
 }

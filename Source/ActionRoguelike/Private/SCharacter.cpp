@@ -30,7 +30,8 @@ ASCharacter::ASCharacter()
 
 	InteractionComponent = CreateDefaultSubobject<USInteractionComponent>("Interaction");
 
-	HealthComponent = CreateDefaultSubobject<USAttributeComponent>("Health Component");
+	HealthComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("Health Component"));
+	HealthMax = CreateDefaultSubobject<USAttributeComponent>(TEXT("Health Max"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -40,7 +41,7 @@ ASCharacter::ASCharacter()
 void ASCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
+	
 	HealthComponent->OnAttributeChanged.AddDynamic(this, &ASCharacter::HandleHealthChanged);
 }
 
@@ -48,7 +49,7 @@ void ASCharacter::PostInitializeComponents()
 void ASCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -150,7 +151,16 @@ void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
 void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
 	float Delta)
 {
-	if (Value <= 0.0f && Delta < 0.0f)
+	UE_LOG(LogTemp, Warning, TEXT("Player Health Changed. Value: %f, Delta: %f"), Value, Delta);
+	
+	if (Delta >= 0.0f)
+	{
+		return;
+	}
+
+	GetMesh()->SetScalarParameterValueOnMaterials("TimeOfHit", GetWorld()->TimeSeconds);
+	
+	if (Value <= 0.0f)
 	{
 		if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
 		{
@@ -162,6 +172,7 @@ void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeCompon
 			}
 		}
 	}
+	
 }
 
 // Called every frame

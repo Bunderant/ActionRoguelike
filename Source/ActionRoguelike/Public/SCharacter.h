@@ -24,9 +24,20 @@ public:
 
 	virtual void PostInitializeComponents() override;
 
+	
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(UIMin=0.1f, UIMax=1.0f))
+	float HitFlashDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FColor HitFlashColor;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health")
 	TObjectPtr<USAttributeComponent> HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health")
+	TObjectPtr<USAttributeComponent> HealthMax;
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> PrimaryProjectileClass;
