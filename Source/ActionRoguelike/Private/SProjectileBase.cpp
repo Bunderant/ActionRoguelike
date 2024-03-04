@@ -36,6 +36,7 @@ ASProjectileBase::ASProjectileBase()
 
 	bShouldBindOverlap = true;
 	bShouldBindHit = true;
+	CameraShakeRadius = 500.0f;
 }
 
 // Called when the game starts or when spawned
@@ -109,6 +110,11 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 	const FRotator Rotation = UKismetMathLibrary::MakeRotFromX(Hit.ImpactNormal);
 	
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystemAsset, Location, Rotation);
+
+	if (CameraShakeAsset)
+	{
+		UGameplayStatics::PlayWorldCameraShake(GetWorld(), CameraShakeAsset, Location, 0.0f, CameraShakeRadius);
+	}
 
 	Destroy();
 }

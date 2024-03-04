@@ -26,6 +26,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	bool bShouldBindHit;
 
+	UPROPERTY(EditAnywhere)
+	float CameraShakeRadius;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComponent;
 
@@ -37,6 +40,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UParticleSystem> HitParticleSystemAsset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UCameraShakeBase> CameraShakeAsset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<USoundBase> Sound;
