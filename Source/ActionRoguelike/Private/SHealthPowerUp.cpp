@@ -15,12 +15,28 @@ ASHealthPowerUp::ASHealthPowerUp()
 
 bool ASHealthPowerUp::CheckCanInteract(const APawn* InstigatorPawn)
 {
-	return InstigatorPawn && InstigatorPawn->IsA(ASCharacter::StaticClass());
+	return (
+		!GetWorldTimerManager().IsTimerActive(CooldownTimerHandle) &&
+		InstigatorPawn &&
+		InstigatorPawn->IsA(ASCharacter::StaticClass())
+	);
 }
 
 void ASHealthPowerUp::Apply(APawn* InstigatorPawn)
 {
+	GetWorldTimerManager().ClearTimer(CooldownTimerHandle);
+	GetWorldTimerManager().SetTimer(CooldownTimerHandle, this, &ASHealthPowerUp::FinishCooldown, CooldownTime);
+
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	
 	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
 	HealthAttribute->ApplyHealthChange(HealthAmount);
+}
+
+void ASHealthPowerUp::FinishCooldown()
+{
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
 }
 

@@ -25,8 +25,6 @@ protected:
 	virtual bool CheckCanInteract(const APawn* InstigatorPawn);
 	
 	virtual void Apply(APawn* InstigatorPawn);
-	
-private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UStaticMeshComponent> StaticMesh;

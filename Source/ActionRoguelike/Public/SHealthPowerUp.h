@@ -25,4 +25,10 @@ protected:
 
 	virtual bool CheckCanInteract(const APawn* InstigatorPawn) override;
 	virtual void Apply(APawn* InstigatorPawn) override;
+
+private:
+
+	FTimerHandle CooldownTimerHandle;
+
+	void FinishCooldown();
 };
