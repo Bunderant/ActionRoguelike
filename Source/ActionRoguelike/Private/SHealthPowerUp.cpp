@@ -15,11 +15,20 @@ ASHealthPowerUp::ASHealthPowerUp()
 
 bool ASHealthPowerUp::CheckCanInteract(const APawn* InstigatorPawn)
 {
-	return (
-		!GetWorldTimerManager().IsTimerActive(CooldownTimerHandle) &&
-		InstigatorPawn &&
-		InstigatorPawn->IsA(ASCharacter::StaticClass())
-	);
+	if (GetWorldTimerManager().IsTimerActive(CooldownTimerHandle) ||
+		!InstigatorPawn ||
+		!InstigatorPawn->IsA(ASCharacter::StaticClass()))
+	{
+		return false;
+	}
+
+	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	if (!HealthAttribute)
+	{
+		return false;
+	}
+
+	return !HealthAttribute->IsFull();
 }
 
 void ASHealthPowerUp::Apply(APawn* InstigatorPawn)
