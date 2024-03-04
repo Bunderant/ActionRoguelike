@@ -113,9 +113,3 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 	Destroy();
 }
 
-// Called every frame
-void ASProjectileBase::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

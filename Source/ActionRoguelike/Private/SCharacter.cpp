@@ -11,6 +11,7 @@
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -135,6 +136,9 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 	SpawnParams.Instigator = this;
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransformMatrix, SpawnParams);
+
+	// Spawn the "muzzle flash" / "casting" particles
+	UGameplayStatics::SpawnEmitterAttached(ProjectileCastParticles, GetMesh(), SpawnProjectile_Socket);
 }
 
 void ASCharacter::HandleJumpInput(const FInputActionInstance& Instance)

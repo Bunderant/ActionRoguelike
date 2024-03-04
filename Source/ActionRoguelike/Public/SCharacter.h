@@ -43,6 +43,9 @@ protected:
 	TSubclassOf<AActor> SecondaryProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
+	TObjectPtr<UParticleSystem> ProjectileCastParticles;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
 	TObjectPtr<UAnimMontage> AttackAnim;
 
 	FTimerHandle TimerHandle_PrimaryAttack;

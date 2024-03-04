@@ -58,8 +58,4 @@ protected:
 	void HandleProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	void DefaultHit(const AActor* OtherActor, const FHitResult& Hit);
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 };
