@@ -36,6 +36,7 @@ ASProjectileBase::ASProjectileBase()
 
 	bShouldBindOverlap = true;
 	bShouldBindHit = true;
+	DamageAmount = 20.0f;
 	CameraShakeRadius = 500.0f;
 }
 
@@ -100,7 +101,7 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 	USAttributeComponent* HealthComponent = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 	if (HealthComponent)
 	{
-		HealthComponent->ApplyHealthChange(-20.0f);
+		HealthComponent->ApplyHealthChange(-DamageAmount);
 	}
 
 	const FVector Location = Hit.bBlockingHit

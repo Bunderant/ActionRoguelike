@@ -20,13 +20,16 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	bool bShouldBindOverlap;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	bool bShouldBindHit;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category="Projectile")
+	float DamageAmount;
+
+	UPROPERTY(EditAnywhere, Category="Projectile")
 	float CameraShakeRadius;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
