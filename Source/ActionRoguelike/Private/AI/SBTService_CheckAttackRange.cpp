@@ -14,7 +14,7 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	if (!ensure(BlackboardComponent)) return;
 
 	AActor* TargetActor = Cast<AActor>(BlackboardComponent->GetValueAsObject(TargetActorKey.SelectedKeyName));
-	if (!ensure(TargetActor)) return;
+	if (!TargetActor) return;
 
 	AAIController* MyController = OwnerComp.GetAIOwner();
 	if (!ensure(MyController)) return;
