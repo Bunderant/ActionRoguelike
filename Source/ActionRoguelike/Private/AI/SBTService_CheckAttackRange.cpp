@@ -25,5 +25,7 @@ void USBTService_CheckAttackRange::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	float DistanceTo = TargetActor->GetDistanceTo(MyPawn);
 	bool bIsWithinRange = DistanceTo <= 1000.0f;
 
+	bIsWithinRange &= MyController->LineOfSightTo(TargetActor);
+
 	BlackboardComponent->SetValueAsBool(IsWithinRangeKey.SelectedKeyName, bIsWithinRange);
 }
