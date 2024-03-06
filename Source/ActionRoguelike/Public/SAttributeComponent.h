@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool ApplyHealthChange(float Delta);
 
+	UFUNCTION(BlueprintCallable)
+	bool RecoverMaxHealth();
+
 	UPROPERTY(BlueprintAssignable, Category="Attribute")
 	FOnAttributeChanged OnAttributeChanged;
 
@@ -29,11 +32,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsFull() const;
 
+	UFUNCTION(BlueprintCallable)
+	float GetHealthAsPercent() const;
+
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	float Health;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	float MaxHealth;
 };

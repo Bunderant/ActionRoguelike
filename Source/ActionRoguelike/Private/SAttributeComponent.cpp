@@ -26,6 +26,11 @@ bool USAttributeComponent::ApplyHealthChange(const float Delta)
 	return true;
 }
 
+bool USAttributeComponent::RecoverMaxHealth()
+{
+	return ApplyHealthChange(MaxHealth);
+}
+
 bool USAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
@@ -34,5 +39,15 @@ bool USAttributeComponent::IsAlive() const
 bool USAttributeComponent::IsFull() const
 {
 	return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
+float USAttributeComponent::GetHealthAsPercent() const
+{
+	if (FMath::IsNearlyZero(MaxHealth) || FMath::IsNearlyZero(Health))
+	{
+		return 0.0f;
+	}
+
+	return Health / MaxHealth;
 }
 

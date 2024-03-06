@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+class USAttributeComponent;
 class UPawnSensingComponent;
 
 UCLASS()
@@ -20,6 +21,9 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	TObjectPtr<USAttributeComponent> HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
