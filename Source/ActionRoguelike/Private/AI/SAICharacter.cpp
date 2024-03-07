@@ -8,6 +8,7 @@
 #include "SAttributeComponent.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 
@@ -52,6 +53,7 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 			AIC->GetBrainComponent()->StopLogic("Killed");
 		}
 
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 		GetMesh()->SetAllBodiesSimulatePhysics(true);
 		GetMesh()->SetCollisionProfileName("Ragdoll");
 
