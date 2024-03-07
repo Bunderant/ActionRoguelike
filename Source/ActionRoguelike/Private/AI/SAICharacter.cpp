@@ -14,6 +14,8 @@ ASAICharacter::ASAICharacter()
 {
 	HealthComponent = CreateDefaultSubobject<USAttributeComponent>("HealthComponent");
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
+
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 void ASAICharacter::PostInitializeComponents()
@@ -31,5 +33,5 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
 	BBComp->SetValueAsObject("TargetActor", Pawn);
 
-	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::Cyan, 0.666f, true);
 }
