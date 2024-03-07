@@ -24,15 +24,6 @@ public:
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 private:
 	UPROPERTY(VisibleAnywhere, Category="Rendering", meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UStaticMeshComponent> BaseMesh;
