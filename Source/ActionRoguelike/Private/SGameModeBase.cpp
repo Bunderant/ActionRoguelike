@@ -3,6 +3,9 @@
 
 #include "SGameModeBase.h"
 
+#include "EngineUtils.h"
+#include "SAttributeComponent.h"
+#include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
 ASGameModeBase::ASGameModeBase()
@@ -42,6 +45,31 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 
 	if (!Locations.IsValidIndex(0))
 	{
+		return;
+	}
+
+	int32 NumAlive = 0;
+	
+	// Only spawn bots if we haven't hit the threshold for the max num alive simultaneously
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++ It)
+	{
+		const ASAICharacter* Bot = *It;
+		const USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
+		if (HealthAttribute->IsAlive())
+		{
+			NumAlive++;
+		}
+	}
+
+	float MaxNumBots = 10.0f;
+	if (BotMaxCountCurve)
+	{
+		MaxNumBots = BotMaxCountCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	if (NumAlive >= MaxNumBots)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Maximum number of bots reached: %f. Retrying shortly..."), MaxNumBots);
 		return;
 	}
 	

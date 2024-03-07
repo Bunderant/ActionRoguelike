@@ -22,10 +22,13 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 	
 protected:
 
-	UPROPERTY(EditAnywhere, Category="AI")
+	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TSubclassOf<AActor> BotClass;
 
-	UPROPERTY(EditAnywhere, Category="AI")
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	TObjectPtr<UCurveFloat> BotMaxCountCurve;
+
+	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnInterval;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
