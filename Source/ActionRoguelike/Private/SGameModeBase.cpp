@@ -34,7 +34,7 @@ void ASGameModeBase::OnSpawnTimerElapsed()
 	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++ It)
 	{
 		const ASAICharacter* Bot = *It;
-		const USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(Bot->GetComponentByClass(USAttributeComponent::StaticClass()));
+		const USAttributeComponent* HealthAttribute = FindComponentByClass<USAttributeComponent>();
 		if (ensure(HealthAttribute) && HealthAttribute->IsAlive())
 		{
 			NumAlive++;

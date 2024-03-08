@@ -22,7 +22,7 @@ bool ASHealthPowerUp::CheckCanInteract(const APawn* InstigatorPawn)
 		return false;
 	}
 
-	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	const USAttributeComponent* HealthAttribute = InstigatorPawn->FindComponentByClass<USAttributeComponent>();
 	if (!HealthAttribute)
 	{
 		return false;
@@ -39,7 +39,7 @@ void ASHealthPowerUp::Apply(APawn* InstigatorPawn)
 	SetActorHiddenInGame(true);
 	SetActorEnableCollision(false);
 	
-	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	USAttributeComponent* HealthAttribute = InstigatorPawn->FindComponentByClass<USAttributeComponent>();
 	HealthAttribute->ApplyHealthChange(this, HealthAmount);
 }
 

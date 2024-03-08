@@ -14,7 +14,7 @@ EBTNodeResult::Type USBTTask_RecoverHealth::ExecuteTask(UBehaviorTreeComponent& 
 	APawn* MyPawn = MyController->GetPawn();
 	if (!ensure(MyPawn)) return EBTNodeResult::Failed;
 
-	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(MyPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	USAttributeComponent* HealthAttribute = MyPawn->FindComponentByClass<USAttributeComponent>();
 	if (!ensureAlwaysMsgf(HealthAttribute, TEXT("AI Pawn has no Health Attribute Component attached, can't recover health."))) return EBTNodeResult::Failed;
 
 	DrawDebugString(GetWorld(), MyPawn->GetActorLocation(), "RECOVERED", nullptr, FColor::Cyan, 4.0f, true, 2);

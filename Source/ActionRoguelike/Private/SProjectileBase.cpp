@@ -98,7 +98,7 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 		return;
 	}
 	
-	USAttributeComponent* HealthComponent = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+	USAttributeComponent* HealthComponent = OtherActor->FindComponentByClass<USAttributeComponent>();
 	if (HealthComponent)
 	{
 		HealthComponent->ApplyHealthChange(GetInstigator(), -DamageAmount);

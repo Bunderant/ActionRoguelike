@@ -20,7 +20,7 @@ void USBTService_CheckHealthLow::TickNode(UBehaviorTreeComponent& OwnerComp, uin
 	const APawn* MyPawn = MyController->GetPawn();
 	if (!ensure(MyPawn)) return;
 
-	const USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(MyPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	const USAttributeComponent* HealthAttribute = MyPawn->FindComponentByClass<USAttributeComponent>();
 	if (!ensureAlwaysMsgf(HealthAttribute, TEXT("AI Pawn has no Health Attribute Component attached, can't check for low health."))) return;
 
 	const bool bIsHealthLow = HealthAttribute->GetHealthAsPercent() <= LowHealthThresholdPercent;
