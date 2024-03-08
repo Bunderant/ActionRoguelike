@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIModule/Classes/AIController.h"
+#include "AIController.h"
 #include "SAIController.generated.h"
 
 UCLASS()

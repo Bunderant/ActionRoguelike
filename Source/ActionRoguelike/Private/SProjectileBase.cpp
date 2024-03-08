@@ -105,7 +105,7 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 	}
 
 	const FVector Location = Hit.bBlockingHit
-		? Hit.ImpactPoint
+		? static_cast<FVector>(Hit.ImpactPoint)
 		: GetActorLocation();
 	
 	const FRotator Rotation = UKismetMathLibrary::MakeRotFromX(Hit.ImpactNormal);
