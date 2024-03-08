@@ -11,7 +11,7 @@ EBTNodeResult::Type USBTTask_RecoverHealth::ExecuteTask(UBehaviorTreeComponent& 
 	const AAIController* MyController = OwnerComp.GetAIOwner();
 	if (!ensure(MyController)) return EBTNodeResult::Failed;
 
-	const APawn* MyPawn = MyController->GetPawn();
+	APawn* MyPawn = MyController->GetPawn();
 	if (!ensure(MyPawn)) return EBTNodeResult::Failed;
 
 	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(MyPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
@@ -19,6 +19,6 @@ EBTNodeResult::Type USBTTask_RecoverHealth::ExecuteTask(UBehaviorTreeComponent& 
 
 	DrawDebugString(GetWorld(), MyPawn->GetActorLocation(), "RECOVERED", nullptr, FColor::Cyan, 4.0f, true, 2);
 
-	HealthAttribute->RecoverMaxHealth();
+	HealthAttribute->RecoverMaxHealth(MyPawn);
 	return EBTNodeResult::Succeeded;
 }

@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "SAttributeComponent.h"
+#include "SCharacter.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -29,13 +30,27 @@ void ASAICharacter::PostInitializeComponents()
 	HealthComponent->OnAttributeChanged.AddDynamic(this, &ASAICharacter::HandleHealthChanged);
 }
 
+bool ASAICharacter::TrySetTargetActor(AActor* TargetActor) const
+{
+	if (TargetActor == nullptr || !TargetActor->IsA(ASCharacter::StaticClass()))
+	{
+		return false;
+	}
+
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (!AIC) return false;
+	
+	AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", TargetActor);
+
+	return true;
+}
+
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	AAIController* AIC = Cast<AAIController>(GetController());
-	if (!AIC) return;
-
-	UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
-	BBComp->SetValueAsObject("TargetActor", Pawn);
+	if (!TrySetTargetActor(Pawn))
+	{
+		return;
+	}
 
 	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::Cyan, 0.666f, true);
 }
@@ -58,5 +73,9 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 		GetMesh()->SetCollisionProfileName("Ragdoll");
 
 		SetLifeSpan(10.0f);
+	}
+	else
+	{
+		TrySetTargetActor(InstigatorActor);
 	}
 }

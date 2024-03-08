@@ -18,10 +18,10 @@ public:
 	USAttributeComponent();
 
 	UFUNCTION(BlueprintCallable)
-	bool ApplyHealthChange(float Delta);
+	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
 	UFUNCTION(BlueprintCallable)
-	bool RecoverMaxHealth();
+	bool RecoverMaxHealth(AActor* InstigatorActor);
 
 	UPROPERTY(BlueprintAssignable, Category="Attribute")
 	FOnAttributeChanged OnAttributeChanged;

@@ -11,7 +11,7 @@ USAttributeComponent::USAttributeComponent()
 	MaxHealth = 100.0f;
 }
 
-bool USAttributeComponent::ApplyHealthChange(const float Delta)
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const float Delta)
 {
 	float PreviousValue = Health;
 	
@@ -22,13 +22,13 @@ bool USAttributeComponent::ApplyHealthChange(const float Delta)
 		return false;
 	}
 
-	OnAttributeChanged.Broadcast(nullptr, this, Health, Health - PreviousValue);
+	OnAttributeChanged.Broadcast(InstigatorActor, this, Health, Health - PreviousValue);
 	return true;
 }
 
-bool USAttributeComponent::RecoverMaxHealth()
+bool USAttributeComponent::RecoverMaxHealth(AActor* InstigatorActor)
 {
-	return ApplyHealthChange(MaxHealth);
+	return ApplyHealthChange(InstigatorActor, MaxHealth);
 }
 
 bool USAttributeComponent::IsAlive() const

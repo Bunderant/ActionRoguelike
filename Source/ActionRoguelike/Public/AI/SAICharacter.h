@@ -28,6 +28,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
 
+	bool TrySetTargetActor(AActor* TargetActor) const;
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 

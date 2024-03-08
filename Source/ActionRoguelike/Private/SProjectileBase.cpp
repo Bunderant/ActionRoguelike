@@ -101,7 +101,7 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 	USAttributeComponent* HealthComponent = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 	if (HealthComponent)
 	{
-		HealthComponent->ApplyHealthChange(-DamageAmount);
+		HealthComponent->ApplyHealthChange(GetInstigator(), -DamageAmount);
 	}
 
 	const FVector Location = Hit.bBlockingHit

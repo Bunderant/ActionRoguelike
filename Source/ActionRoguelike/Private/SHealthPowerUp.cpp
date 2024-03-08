@@ -40,7 +40,7 @@ void ASHealthPowerUp::Apply(APawn* InstigatorPawn)
 	SetActorEnableCollision(false);
 	
 	USAttributeComponent* HealthAttribute = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
-	HealthAttribute->ApplyHealthChange(HealthAmount);
+	HealthAttribute->ApplyHealthChange(this, HealthAmount);
 }
 
 void ASHealthPowerUp::FinishCooldown()

@@ -95,7 +95,7 @@ void ASExplosiveBarrel::Explode()
 		UE_LOG(LogTemp, Warning, TEXT("Hit actor %s with %d attributes"), *(HitActor->GetName()), AttributeComponents.Num())
 		for (USAttributeComponent* HealthComponent : AttributeComponents)
 		{
-			HealthComponent->ApplyHealthChange(-50);
+			HealthComponent->ApplyHealthChange(this, -50);
 		}
 	}
 
