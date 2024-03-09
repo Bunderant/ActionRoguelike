@@ -27,11 +27,14 @@ public:
 	
 protected:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(UIMin=0.1f, UIMax=1.0f))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(UIMin=0.1f, UIMax=1.0f), Category="Health")
 	float HitFlashDuration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Health")
 	FColor HitFlashColor;
+
+	UPROPERTY(VisibleAnywhere, Category="Health")
+	FName HitFlashTimeParam;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health")
 	TObjectPtr<USAttributeComponent> HealthComponent;

@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<UPawnSensingComponent> PawnSensingComponent;
 
+	UPROPERTY(VisibleAnywhere, Category="Health")
+	FName HitFlashTimeParam;
+
 	bool TrySetTargetActor(AActor* TargetActor) const;
 
 	UFUNCTION()

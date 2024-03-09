@@ -19,6 +19,8 @@ ASAICharacter::ASAICharacter()
 	HealthComponent = CreateDefaultSubobject<USAttributeComponent>("HealthComponent");
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 
+	HitFlashTimeParam = "TimeOfHit";
+
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
@@ -60,6 +62,8 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 {
 	if (Delta >= 0.0f) return;
 
+	GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParam, GetWorld()->TimeSeconds);
+	
 	if (Value <= 0.0f)
 	{
 		ASAIController* AIC = Cast<ASAIController>(GetController());

@@ -31,6 +31,9 @@ ASCharacter::ASCharacter()
 
 	InteractionComponent = CreateDefaultSubobject<USInteractionComponent>("Interaction");
 
+	HitFlashColor = FColor::Red;
+	HitFlashDuration = 0.5f;
+	HitFlashTimeParam = "TimeOfHit";
 	HealthComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("Health Component"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -161,7 +164,7 @@ void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeCompon
 		return;
 	}
 
-	GetMesh()->SetScalarParameterValueOnMaterials("TimeOfHit", GetWorld()->TimeSeconds);
+	GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParam, GetWorld()->TimeSeconds);
 	
 	if (Value <= 0.0f)
 	{
