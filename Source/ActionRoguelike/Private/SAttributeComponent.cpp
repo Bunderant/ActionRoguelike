@@ -26,7 +26,7 @@ bool USAttributeComponent::IsActorAlive(const AActor* Actor)
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const float Delta)
 {
-	float PreviousValue = Health;
+	const float PreviousValue = Health;
 	
 	Health = FMath::Clamp(Health + Delta, 0, MaxHealth);
 

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+class USWorldCommonUserWidget;
 class USAttributeComponent;
 class UPawnSensingComponent;
 
@@ -21,6 +22,12 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> HealthWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<USWorldCommonUserWidget> HealthWidgetInstance;
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USAttributeComponent> HealthComponent;

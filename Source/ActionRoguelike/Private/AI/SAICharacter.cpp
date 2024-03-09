@@ -9,8 +9,10 @@
 #include "SCharacter.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "UI/SWorldCommonUserWidget.h"
 
 
 // Sets default values
@@ -63,6 +65,16 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 	if (Delta >= 0.0f) return;
 
 	GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParam, GetWorld()->TimeSeconds);
+
+	if (HealthWidgetInstance == nullptr)
+	{
+		HealthWidgetInstance = CreateWidget<USWorldCommonUserWidget>(GetWorld(), HealthWidgetClass);
+		if (HealthWidgetInstance)
+		{
+			HealthWidgetInstance->AttachedActor = this;
+			HealthWidgetInstance->AddToViewport();
+		}
+	}
 	
 	if (Value <= 0.0f)
 	{
