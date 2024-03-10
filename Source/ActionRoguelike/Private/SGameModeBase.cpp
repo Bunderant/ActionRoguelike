@@ -31,7 +31,7 @@ void ASGameModeBase::OnSpawnTimerElapsed()
 	int32 NumAlive = 0;
 	
 	// Only spawn bots if we haven't hit the threshold for the max num alive simultaneously
-	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++ It)
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
 	{
 		const ASAICharacter* Bot = *It;
 		const USAttributeComponent* HealthAttribute = Bot->FindComponentByClass<USAttributeComponent>();
@@ -76,4 +76,18 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 	DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 	
 	GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
+}
+
+void ASGameModeBase::KillAll()
+{
+	// Only spawn bots if we haven't hit the threshold for the max num alive simultaneously
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
+	{
+		const ASAICharacter* Bot = *It;
+		USAttributeComponent* HealthAttribute = Bot->FindComponentByClass<USAttributeComponent>();
+		if (ensure(HealthAttribute) && HealthAttribute->IsAlive())
+		{
+			HealthAttribute->Kill(this); // @fixme: use player as instigator rather than game mode instance
+		}
+	}
 }

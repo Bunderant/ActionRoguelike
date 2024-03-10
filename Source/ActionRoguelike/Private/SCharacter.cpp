@@ -233,3 +233,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
 }
 
+void ASCharacter::HealSelf(float Amount/*100*/)
+{
+	HealthComponent->ApplyHealthChange(this, Amount);
+}
+
