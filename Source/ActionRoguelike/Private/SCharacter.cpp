@@ -48,11 +48,10 @@ void ASCharacter::PostInitializeComponents()
 	HealthComponent->OnAttributeChanged.AddDynamic(this, &ASCharacter::HandleHealthChanged);
 }
 
-// Called when the game starts or when spawned
-void ASCharacter::BeginPlay()
+void ASCharacter::PossessedBy(AController* NewController)
 {
-	Super::BeginPlay();
-	
+	Super::PossessedBy(NewController);
+
 	if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
