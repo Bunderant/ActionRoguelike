@@ -32,13 +32,22 @@ void USInteractionComponent::PrimaryInteract()
 		// bDidHit is true.
 		bDidHit &= HitActor && HitActor->Implements<USGameplayInterface>();
 
+		if (bShouldDebugDraw)
+		{
+			DrawDebugSphere(
+				GetWorld(), 
+				HitResult.Location, 
+				SphereRadius, 
+				8, 
+				bDidHit ? FColor::Green : FColor::Red, 
+				false, 
+				2.0f, 
+				0, 
+				2.0f);
+		}
+
 		if (bDidHit)
 		{
-			if (bShouldDebugDraw)
-			{
-				DrawDebugSphere(GetWorld(), HitResult.Location, SphereRadius, 8, FColor::Green, false, 2.0f, 0, 2.0f);
-			}
-			
 			ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(GetOwner()));
 			break;
 		}
