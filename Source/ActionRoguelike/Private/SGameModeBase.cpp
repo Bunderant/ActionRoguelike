@@ -9,6 +9,8 @@
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
+static TAutoConsoleVariable CVarEnableBotSpawn(TEXT("su.botSpawnEnabled"), true, TEXT("Allow bot spawning at configured time interval."));
+
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnInterval = 2.0f;
@@ -23,6 +25,12 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::OnSpawnTimerElapsed()
 {
+	if (!CVarEnableBotSpawn->GetBool())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Bot spawning disabled via CVar."))
+		return;
+	}
+	
 	if (!ensureMsgf(SpawnEnvQuery, TEXT("Spawn Env Query not assigned to game mode.")))
 	{
 		GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
