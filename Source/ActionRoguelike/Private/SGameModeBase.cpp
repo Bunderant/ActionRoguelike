@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "SAttributeComponent.h"
+#include "SCharacter.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
@@ -76,6 +77,27 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 	DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 	
 	GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
+}
+
+void ASGameModeBase::RespawnPlayerDelayed(AController* PlayerController)
+{
+	if (!ensure(PlayerController)) return;
+
+	PlayerController->UnPossess();
+	RestartPlayer(PlayerController);
+}
+
+void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
+{
+	if (const ASCharacter* Player = Cast<ASCharacter>(Victim))
+	{
+		FTimerHandle TimerHandle_RespawnDelay;
+		FTimerDelegate RespawnDelegate;
+		RespawnDelegate.BindUFunction(this, "RespawnPlayerDelayed", Player->GetController());
+
+		float RespawnDelay = 2.0f;
+		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, RespawnDelegate, RespawnDelay, false);
+	}
 }
 
 void ASGameModeBase::KillAll()

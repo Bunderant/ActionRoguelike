@@ -92,8 +92,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USInteractionComponent> InteractionComponent;
 	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);

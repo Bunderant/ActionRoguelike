@@ -40,7 +40,12 @@ protected:
 
 	void OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
 
+	UFUNCTION()
+	void RespawnPlayerDelayed(AController* PlayerController);
+
 public:
+
+	virtual void OnActorKilled(AActor* Victim, AActor* Killer);
 
 	UFUNCTION(Exec)
 	void KillAll();
