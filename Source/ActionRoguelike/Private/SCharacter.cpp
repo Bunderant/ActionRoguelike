@@ -156,8 +156,6 @@ void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
 void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
 	float Delta)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Player Health Changed. Value: %f, Delta: %f"), Value, Delta);
-	
 	if (Delta >= 0.0f)
 	{
 		return;
