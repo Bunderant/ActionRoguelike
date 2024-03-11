@@ -11,6 +11,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "UI/SWorldCommonUserWidget.h"
 
@@ -22,6 +23,9 @@ ASAICharacter::ASAICharacter()
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 
 	HitFlashTimeParam = "TimeOfHit";
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
+	GetMesh()->SetGenerateOverlapEvents(true);
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
@@ -84,7 +88,9 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 			AIC->GetBrainComponent()->StopLogic("Killed");
 		}
 
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetCharacterMovement()->DisableMovement();
+		
 		GetMesh()->SetAllBodiesSimulatePhysics(true);
 		GetMesh()->SetCollisionProfileName("Ragdoll");
 

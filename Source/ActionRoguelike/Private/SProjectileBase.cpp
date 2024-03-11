@@ -4,6 +4,7 @@
 #include "SProjectileBase.h"
 
 #include "SAttributeComponent.h"
+#include "SGameplayFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -98,11 +99,7 @@ void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hi
 		return;
 	}
 	
-	USAttributeComponent* HealthComponent = OtherActor->FindComponentByClass<USAttributeComponent>();
-	if (HealthComponent)
-	{
-		HealthComponent->ApplyHealthChange(GetInstigator(), -DamageAmount);
-	}
+	USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, Hit);
 
 	const FVector Location = Hit.bBlockingHit
 		? static_cast<FVector>(Hit.ImpactPoint)
