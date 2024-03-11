@@ -232,6 +232,12 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
 }
 
+void ASCharacter::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const
+{
+	OutLocation = CameraComponent->GetComponentLocation();
+	OutRotation = CameraComponent->GetComponentRotation();
+}
+
 void ASCharacter::HealSelf(float Amount/*100*/)
 {
 	HealthComponent->ApplyHealthChange(this, Amount);
