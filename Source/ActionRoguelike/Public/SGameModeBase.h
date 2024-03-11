@@ -26,6 +26,21 @@ public:
 	
 protected:
 
+	UPROPERTY(EditAnywhere, Category="Power-ups")
+	TSubclassOf<AActor> HealthPowerUpClass;
+
+	UPROPERTY(EditAnywhere, Category="Power-ups")
+	TSubclassOf<AActor> CoinPowerUpClass;
+
+	UPROPERTY(EditAnywhere, Category="Power-ups")
+	TObjectPtr<UEnvQuery> PowerUpSpawnEnvQuery;
+	
+	UPROPERTY(EditAnywhere, Category="Power-ups")
+	int32 NumStartupHealthPowerUps;
+
+	UPROPERTY(EditAnywhere, Category="Power-ups")
+	int32 NumStartupCoinPowerUps;
+
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TSubclassOf<AActor> BotClass;
 
@@ -41,6 +56,10 @@ protected:
 	FTimerHandle SpawnTimerHandle;
 
 	void OnSpawnTimerElapsed();
+
+	void SpawnPowerUps();
+
+	void OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
 
 	void OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
 

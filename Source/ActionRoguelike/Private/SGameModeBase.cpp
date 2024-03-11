@@ -22,6 +22,8 @@ void ASGameModeBase::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ASGameModeBase::OnSpawnTimerElapsed, SpawnInterval, true);
+
+	SpawnPowerUps();
 }
 
 ASGameModeBase* ASGameModeBase::Get(const AActor* WorldContextObject)
@@ -70,6 +72,80 @@ void ASGameModeBase::OnSpawnTimerElapsed()
 	
 	FEnvQueryRequest Request(SpawnEnvQuery, this);
 	Request.Execute(EEnvQueryRunMode::RandomBest5Pct, this, &ASGameModeBase::OnBotSpawnQueryCompleted);
+}
+
+void ASGameModeBase::SpawnPowerUps()
+{
+	if (NumStartupCoinPowerUps == 0 && NumStartupHealthPowerUps == 0)
+	{
+		return;
+	}
+
+	if (!ensureMsgf(PowerUpSpawnEnvQuery, TEXT("No power up spawn query assigned in game mode."))) return;
+	
+	FEnvQueryRequest Request(PowerUpSpawnEnvQuery, this);
+	Request.Execute(EEnvQueryRunMode::AllMatching, this, &ASGameModeBase::OnPowerUpSpawnQueryCompleted);
+}
+
+void ASGameModeBase::OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result)
+{
+	if (!ensureAlwaysMsgf(!(NumStartupCoinPowerUps == 0 && NumStartupHealthPowerUps == 0), TEXT("Never run power up query if no powerups are requested.")))
+	{
+		return;
+	}
+	
+	TArray<FVector> Locations;
+	Result->GetAllAsLocations(Locations);
+
+	int32 NumCoins = NumStartupCoinPowerUps;
+	int32 NumHealth = NumStartupHealthPowerUps;
+
+	if (Locations.Num() < NumStartupCoinPowerUps + NumStartupHealthPowerUps)
+	{
+		UE_LOG(
+			LogTemp, 
+			Warning, 
+			TEXT("Truncating requested power-up count. EQS found %d locations, but there should be at least %d."), 
+			Locations.Num(), 
+			NumCoins + NumHealth);
+
+		const float PercentCoins = NumCoins / (NumCoins + NumHealth);
+		const float PercentHealth = NumHealth / (NumCoins + NumHealth);
+
+		NumCoins = FMath::RoundToInt32(NumCoins * PercentCoins);
+		NumHealth = FMath::RoundToInt32(NumHealth * PercentHealth);
+	}
+
+	// Shuffle the locations array so we get a random spread of the included power up types
+	for (int32 i = 0, LastIndex = Locations.Num() - 1; i <= LastIndex; i++)
+	{
+		int32 RandomIndex = FMath::RandRange(0, LastIndex);
+		if (RandomIndex == i) continue;
+
+		const FVector TempLocation = Locations[i];
+		Locations[i] = Locations[RandomIndex];
+		Locations[RandomIndex] = TempLocation;
+	}
+
+	// Share an index across all spawn loops for each power up type
+	int SharedIndex = 0;
+	if (ensure(CoinPowerUpClass))
+	{
+		while (SharedIndex <= NumCoins && SharedIndex < Locations.Num())
+		{
+			GetWorld()->SpawnActor<AActor>(CoinPowerUpClass, Locations[SharedIndex] + FVector(0, 0, 100), FRotator::ZeroRotator);
+			SharedIndex++;
+		}
+	}
+
+	if (ensure(HealthPowerUpClass))
+	{
+		while (SharedIndex <= NumCoins + NumHealth && SharedIndex < Locations.Num())
+		{
+			GetWorld()->SpawnActor<AActor>(HealthPowerUpClass, Locations[SharedIndex] + FVector(0, 0, 100), FRotator::ZeroRotator);
+			SharedIndex++;
+		}
+	}
 }
 
 void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result)
