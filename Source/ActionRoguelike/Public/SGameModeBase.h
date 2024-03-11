@@ -19,6 +19,10 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 	ASGameModeBase();
 
 	virtual void StartPlay() override;
+
+public:
+	UFUNCTION(BlueprintCallable, Category="Game Mode")
+	static ASGameModeBase* Get(const AActor* WorldContextObject);
 	
 protected:
 

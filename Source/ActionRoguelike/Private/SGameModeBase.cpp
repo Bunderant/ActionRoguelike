@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
@@ -21,6 +22,11 @@ void ASGameModeBase::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ASGameModeBase::OnSpawnTimerElapsed, SpawnInterval, true);
+}
+
+ASGameModeBase* ASGameModeBase::Get(const AActor* WorldContextObject)
+{
+	return WorldContextObject->GetWorld()->GetAuthGameMode<ASGameModeBase>();
 }
 
 void ASGameModeBase::OnSpawnTimerElapsed()
@@ -105,6 +111,11 @@ void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, RespawnDelegate, RespawnDelay, false);
+	}
+	else if (const ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer); KillerPlayer && Victim->IsA(ASAICharacter::StaticClass()))
+	{
+		ASPlayerState* PlayerState = KillerPlayer->GetPlayerState<ASPlayerState>();
+		PlayerState->IncrementCredits();
 	}
 }
 

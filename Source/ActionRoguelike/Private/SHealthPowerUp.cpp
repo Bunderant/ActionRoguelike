@@ -4,6 +4,7 @@
 
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 
 
 // Sets default values
@@ -33,11 +34,16 @@ bool ASHealthPowerUp::CheckCanInteract(const APawn* InstigatorPawn)
 
 void ASHealthPowerUp::Apply(APawn* InstigatorPawn)
 {
+	ASPlayerState* PlayerState = InstigatorPawn->GetPlayerState<ASPlayerState>();
+	if (!PlayerState || !PlayerState->DecrementCredits())
+	{
+		return;
+	}
+	
 	GetWorldTimerManager().ClearTimer(CooldownTimerHandle);
 	GetWorldTimerManager().SetTimer(CooldownTimerHandle, this, &ASHealthPowerUp::FinishCooldown, CooldownTime);
 
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
+	Hide();
 	
 	USAttributeComponent* HealthAttribute = InstigatorPawn->FindComponentByClass<USAttributeComponent>();
 	HealthAttribute->ApplyHealthChange(this, HealthAmount);
@@ -45,7 +51,6 @@ void ASHealthPowerUp::Apply(APawn* InstigatorPawn)
 
 void ASHealthPowerUp::FinishCooldown()
 {
-	SetActorHiddenInGame(false);
-	SetActorEnableCollision(true);
+	Show();
 }
 

@@ -31,3 +31,15 @@ void ASPowerUpBase::Apply(APawn* InstigatorPawn)
 {
 	unimplemented();
 }
+
+void ASPowerUpBase::Hide()
+{
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+}
+
+void ASPowerUpBase::Show()
+{
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+}
