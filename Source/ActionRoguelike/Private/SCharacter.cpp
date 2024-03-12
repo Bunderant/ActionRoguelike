@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
+#include "Actions/SActionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -35,6 +36,8 @@ ASCharacter::ASCharacter()
 	HitFlashDuration = 0.5f;
 	HitFlashTimeParam = "TimeOfHit";
 	HealthComponent = CreateDefaultSubobject<USAttributeComponent>(TEXT("Health Component"));
+
+	ActionComponent = CreateDefaultSubobject<USActionComponent>("Action Component");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -153,8 +156,20 @@ void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
 	InteractionComponent->PrimaryInteract();
 }
 
+void ASCharacter::OnSecondaryMovementInputTriggered(const FInputActionInstance& Instance)
+{
+	if (Instance.GetValue().Get<bool>())
+	{
+		ActionComponent->StartActionByName(this, "Sprint");
+	}
+	else
+	{
+		ActionComponent->StopActionByName(this, "Sprint");
+	}
+}
+
 void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
-	float Delta)
+                                      float Delta)
 {
 	if (Delta >= 0.0f)
 	{
@@ -212,7 +227,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			InputActionPrimaryAttack.IsNull() ||
 			InputActionSecondaryAttack.IsNull() ||
 			InputActionJump.IsNull() ||
-			InputActionInteract.IsNull())
+			InputActionInteract.IsNull() ||
+			InputActionSecondaryMovement.IsNull())
 		{
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.0f, FColor::Red, "All InputAction assets must be assigned in Blueprints that inherit SCharacter.");
 			UE_LOG(LogTemp, Error, TEXT("All InputAction assets must be assigned in Blueprints that inherit SCharacter."));
@@ -228,6 +244,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionSecondaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::SecondaryAttack);
 	Input->BindAction(InputActionJump.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
+	Input->BindAction(InputActionSecondaryMovement.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::OnSecondaryMovementInputTriggered);
 }
 
 void ASCharacter::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const

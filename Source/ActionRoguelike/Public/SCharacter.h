@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "SCharacter.generated.h"
 
+class USActionComponent;
 class USAttributeComponent;
 class ASProjectileBase;
 class USpringArmComponent;
@@ -38,6 +39,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Health")
 	TObjectPtr<USAttributeComponent> HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Actions")
+	TObjectPtr<USActionComponent> ActionComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> PrimaryProjectileClass;
@@ -81,7 +85,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionInteract;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TSoftObjectPtr<UInputAction> InputActionSecondaryMovement;
 
 	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -103,6 +109,7 @@ protected:
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void HandleJumpInput(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
+	void OnSecondaryMovementInputTriggered(const FInputActionInstance& Instance);
 
 	UFUNCTION()
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);
