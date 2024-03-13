@@ -18,7 +18,8 @@ public class ActionRoguelike : ModuleRules
 			"AIModule",
 			"GameplayTasks",
 			"CommonUI",
-			"UMG"
+			"UMG",
+			"GameplayTags"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
