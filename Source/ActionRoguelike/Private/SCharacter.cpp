@@ -92,9 +92,7 @@ void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
 
 void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 {
-	PlayAnimMontage(AttackAnim);
-	
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::SpawnPrimaryProjectile, SpawnProjectile_Delay);
+	ActionComponent->StartActionByName(this, "PrimaryAttack");
 }
 
 void ASCharacter::SecondaryAttack(const FInputActionInstance& Instance)
