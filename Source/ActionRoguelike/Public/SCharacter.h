@@ -42,28 +42,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Actions")
 	TObjectPtr<USActionComponent> ActionComponent;
-	
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> PrimaryProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> SecondaryProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TObjectPtr<UParticleSystem> ProjectileCastParticles;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TObjectPtr<UAnimMontage> AttackAnim;
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	float SpawnProjectile_Delay;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	FName SpawnProjectile_Socket;
-	
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputMappingContext> InputMapping;
@@ -79,6 +57,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionSecondaryAttack;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TSoftObjectPtr<UInputAction> InputActionUltimateAttack;
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionJump;
@@ -104,9 +85,7 @@ protected:
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
 	void SecondaryAttack(const FInputActionInstance& Instance);
-	void SpawnPrimaryProjectile();
-	void SpawnSecondaryProjectile();
-	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
+	void UltimateAttack(const FInputActionInstance& Instance);
 	void HandleJumpInput(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
 	void OnSecondaryMovementInputTriggered(const FInputActionInstance& Instance);

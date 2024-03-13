@@ -12,16 +12,12 @@
 #include "SInteractionComponent.h"
 #include "Actions/SActionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	SpawnProjectile_Delay = 0.2f;
-	SpawnProjectile_Socket = "Muzzle_01";
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("Spring Arm");
 	SpringArmComponent->SetupAttachment(RootComponent);
@@ -97,56 +93,17 @@ void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
 
 void ASCharacter::SecondaryAttack(const FInputActionInstance& Instance)
 {
-	PlayAnimMontage(AttackAnim);
-	
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SpawnSecondaryProjectile, SpawnProjectile_Delay);
+	ActionComponent->StartActionByName(this, "SecondaryAttack");
 }
 
-void ASCharacter::SpawnPrimaryProjectile()
+void ASCharacter::UltimateAttack(const FInputActionInstance& Instance)
 {
-	SpawnProjectile(PrimaryProjectileClass);
-}
-
-void ASCharacter::SpawnSecondaryProjectile()
-{
-	SpawnProjectile(SecondaryProjectileClass);
-}
-
-void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
-{
-	FHitResult HitResult;
-
-	FVector HitTraceStart = CameraComponent->GetComponentLocation();
-	const FVector HitTraceEnd = HitTraceStart + CameraComponent->GetForwardVector() * 10000;
-
-	const FVector SpawnStart = GetMesh()->GetSocketLocation(SpawnProjectile_Socket);
-	
-	// Move the hit trace start point up a bit, so it starts from the center of the screen, but on the plane of the
-	// spawn start location
-	HitTraceStart = FVector::PointPlaneProject(HitTraceStart, SpawnStart, CameraComponent->GetForwardVector());
-
-	FCollisionQueryParams QueryParams = FCollisionQueryParams::DefaultQueryParam;
-	QueryParams.AddIgnoredActor(this);
-	
-	const FVector SpawnEnd = GetWorld()->LineTraceSingleByProfile(HitResult, HitTraceStart, HitTraceEnd, "BlockAllObjects", QueryParams)
-		? HitResult.ImpactPoint
-		: HitTraceEnd;
-	
-	FTransform SpawnTransformMatrix = FTransform((SpawnEnd - SpawnStart).ToOrientationRotator(), SpawnStart);
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	SpawnParams.Instigator = this;
-	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTransformMatrix, SpawnParams);
-
-	// Spawn the "muzzle flash" / "casting" particles
-	UGameplayStatics::SpawnEmitterAttached(ProjectileCastParticles, GetMesh(), SpawnProjectile_Socket);
+	ActionComponent->StartActionByName(this, "UltimateAttack");
 }
 
 void ASCharacter::HandleJumpInput(const FInputActionInstance& Instance)
 {
-	Super::Jump();
+	Jump();
 }
 
 void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
@@ -224,6 +181,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			InputActionMoveCamera.IsNull() ||
 			InputActionPrimaryAttack.IsNull() ||
 			InputActionSecondaryAttack.IsNull() ||
+			InputActionUltimateAttack.IsNull() ||
 			InputActionJump.IsNull() ||
 			InputActionInteract.IsNull() ||
 			InputActionSecondaryMovement.IsNull())
@@ -240,6 +198,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionMoveCamera.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::MoveCamera);
 	Input->BindAction(InputActionPrimaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::PrimaryAttack);
 	Input->BindAction(InputActionSecondaryAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::SecondaryAttack);
+	Input->BindAction(InputActionUltimateAttack.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::UltimateAttack);
 	Input->BindAction(InputActionJump.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
 	Input->BindAction(InputActionSecondaryMovement.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::OnSecondaryMovementInputTriggered);

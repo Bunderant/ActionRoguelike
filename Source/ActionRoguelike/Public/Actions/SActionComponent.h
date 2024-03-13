@@ -34,6 +34,9 @@ public:
 	bool StopActionByName(AActor* Instigator, const FName ActionName);
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="Actions")
+	TArray<TSubclassOf<USAction>> DefaultActions;
+	
 	UPROPERTY()
 	TArray<TObjectPtr<USAction>> Actions;
 };
