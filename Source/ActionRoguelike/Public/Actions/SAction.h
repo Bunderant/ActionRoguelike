@@ -33,8 +33,17 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category="Actions")
 	void StopAction(AActor* Instigator);
 
+	UFUNCTION(BlueprintNativeEvent, Category="Actions")
+	bool CanStart() const;
+
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	bool IsRunning() const;
+
 	virtual UWorld* GetWorld() const override;
 
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	USActionComponent* GetOwningComponent() const;
+
+protected:
+	bool bIsRunning;
 };

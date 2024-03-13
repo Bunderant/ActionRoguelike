@@ -46,6 +46,13 @@ bool USActionComponent::StartActionByName(AActor* Instigator, const FName Action
 	{
 		if (Action && Action->ActionName == ActionName)
 		{
+			if (!Action->CanStart())
+			{
+				FString DebugMsg = GetNameSafe(GetOwner()) + " : Failed to START action " + ActionName.ToString();
+				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, DebugMsg);
+				continue;
+			}
+			
 			Action->StartAction(Instigator);
 			return true;
 		}
@@ -60,8 +67,11 @@ bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionN
 	{
 		if (Action && Action->ActionName == ActionName)
 		{
-			Action->StopAction(Instigator);
-			return true;
+			if (Action->IsRunning())
+			{
+				Action->StopAction(Instigator);
+				return true;
+			}
 		}
 	}
 
