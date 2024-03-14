@@ -4,26 +4,47 @@
 #include "SInteractionComponent.h"
 
 #include "SGameplayInterface.h"
+#include "Blueprint/UserWidget.h"
+#include "UI/SWorldCommonUserWidget.h"
 
 static TAutoConsoleVariable CVarEnableInteractDebugDraw(TEXT("su.interactDebugEnabled"), false, TEXT("Draw debug shapes in the world for primary interaction input."), ECVF_Cheat);
 
-void USInteractionComponent::PrimaryInteract()
+USInteractionComponent::USInteractionComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+	TraceDistance = 800.0f;
+	TraceRadius = 30.0f;
+	TraceCollisionChannel = ECC_WorldDynamic;
+}
+
+void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	FindBestInteractable();
+}
+
+void USInteractionComponent::FindBestInteractable()
 {
 	bool bShouldDebugDraw = CVarEnableInteractDebugDraw->GetBool();
 	
 	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(TraceCollisionChannel);
 	
 	FVector EyeLocation;
 	FRotator EyeRotation;
 
 	GetOwner()->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
-
-	float SphereRadius = 30.0f;
+	FVector End = EyeLocation + (EyeRotation.Vector() * TraceDistance);
+	
 	TArray<FHitResult> Hits;
-	bool bDidHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(SphereRadius));
+	bool bDidHit = GetWorld()->SweepMultiByObjectType(Hits, EyeLocation, End, FQuat::Identity, ObjectQueryParams, FCollisionShape::MakeSphere(TraceRadius));
 
+	// Clear the focused actor from the previous frame
+	FocusedActor = nullptr;
+	
 	for (auto HitResult : Hits)
 	{
 		AActor* HitActor = HitResult.GetActor();
@@ -37,7 +58,7 @@ void USInteractionComponent::PrimaryInteract()
 			DrawDebugSphere(
 				GetWorld(), 
 				HitResult.Location, 
-				SphereRadius, 
+				TraceRadius, 
 				8, 
 				bDidHit ? FColor::Green : FColor::Red, 
 				false, 
@@ -48,14 +69,40 @@ void USInteractionComponent::PrimaryInteract()
 
 		if (bDidHit)
 		{
-			ISGameplayInterface::Execute_Interact(HitActor, Cast<APawn>(GetOwner()));
+			FocusedActor = HitActor;
 			break;
 		}
+	}
+
+	if (FocusedActor && ensure(DefaultFocusWidget))
+	{
+		if (!FocusWidgetInstance)
+		{
+			FocusWidgetInstance = Cast<USWorldCommonUserWidget>(CreateWidget(GetWorld(), DefaultFocusWidget));
+		}
+
+		FocusWidgetInstance->AttachedActor = FocusedActor;
+
+		if (!FocusWidgetInstance->IsInViewport())
+		{
+			FocusWidgetInstance->AddToViewport();
+		}
+	}
+	else if (FocusWidgetInstance && FocusWidgetInstance->IsInViewport())
+	{
+		FocusWidgetInstance->RemoveFromParent();
 	}
 
 	if (bShouldDebugDraw)
 	{
 		DrawDebugLine(GetWorld(), EyeLocation, End, bDidHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2.0f);
 	}
+}
+
+void USInteractionComponent::PrimaryInteract()
+{
+	if (!FocusedActor) return;
+	
+	ISGameplayInterface::Execute_Interact(FocusedActor, Cast<APawn>(GetOwner()));
 }
 
