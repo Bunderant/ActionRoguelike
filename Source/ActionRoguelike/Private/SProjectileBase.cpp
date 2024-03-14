@@ -3,8 +3,8 @@
 
 #include "SProjectileBase.h"
 
-#include "SAttributeComponent.h"
 #include "SGameplayFunctionLibrary.h"
+#include "Actions/SActionComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -92,10 +92,18 @@ void ASProjectileBase::HandleProjectileHit_Implementation(UPrimitiveComponent* H
 	DefaultHit(OtherActor, Hit);
 }
 
-void ASProjectileBase::DefaultHit(const AActor* OtherActor, const FHitResult& Hit)
+void ASProjectileBase::DefaultHit(AActor* OtherActor, const FHitResult& Hit)
 {
 	if (!OtherActor || OtherActor == GetInstigator())
 	{
+		return;
+	}
+
+	USActionComponent* ActionComp = OtherActor->FindComponentByClass<USActionComponent>();
+	if (ActionComp && ActionComp->ActiveGameplayTags.HasTagExact(ParryingTag))
+	{
+		MovementComponent->Velocity = -MovementComponent->Velocity;
+		SetInstigator(Cast<APawn>(OtherActor));
 		return;
 	}
 	

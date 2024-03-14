@@ -123,6 +123,11 @@ void ASCharacter::OnSecondaryMovementInputTriggered(const FInputActionInstance& 
 	}
 }
 
+void ASCharacter::OnParryInputTriggered(const FInputActionInstance& Instance)
+{
+	ActionComponent->StartActionByName(this, "Parry");
+}
+
 void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
                                       float Delta)
 {
@@ -184,7 +189,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 			InputActionUltimateAttack.IsNull() ||
 			InputActionJump.IsNull() ||
 			InputActionInteract.IsNull() ||
-			InputActionSecondaryMovement.IsNull())
+			InputActionSecondaryMovement.IsNull() ||
+			InputActionParry.IsNull())
 		{
 			GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.0f, FColor::Red, "All InputAction assets must be assigned in Blueprints that inherit SCharacter.");
 			UE_LOG(LogTemp, Error, TEXT("All InputAction assets must be assigned in Blueprints that inherit SCharacter."));
@@ -202,6 +208,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Input->BindAction(InputActionJump.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::Jump);
 	Input->BindAction(InputActionInteract.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::HandleInteractInput);
 	Input->BindAction(InputActionSecondaryMovement.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::OnSecondaryMovementInputTriggered);
+	Input->BindAction(InputActionParry.LoadSynchronous(), ETriggerEvent::Triggered, this, &ASCharacter::OnParryInputTriggered);
 }
 
 void ASCharacter::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const

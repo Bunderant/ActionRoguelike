@@ -70,6 +70,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TSoftObjectPtr<UInputAction> InputActionSecondaryMovement;
 
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TSoftObjectPtr<UInputAction> InputActionParry;
+
 	UPROPERTY(VisibleAnywhere, Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
@@ -89,6 +92,7 @@ protected:
 	void HandleJumpInput(const FInputActionInstance& Instance);
 	void HandleInteractInput(const FInputActionInstance& Instance);
 	void OnSecondaryMovementInputTriggered(const FInputActionInstance& Instance);
+	void OnParryInputTriggered(const FInputActionInstance& Instance);
 
 	UFUNCTION()
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
 #include "SProjectileBase.generated.h"
 
@@ -19,6 +20,9 @@ public:
 	ASProjectileBase();
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, Category="Actions")
+	FGameplayTag ParryingTag;
 
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	bool bShouldBindOverlap;
@@ -66,5 +70,5 @@ protected:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta=(DisplayName="Handle Projectile Hit"))
 	void HandleProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-	void DefaultHit(const AActor* OtherActor, const FHitResult& Hit);
+	void DefaultHit(AActor* OtherActor, const FHitResult& Hit);
 };
