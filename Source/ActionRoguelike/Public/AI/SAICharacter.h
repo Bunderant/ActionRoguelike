@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+class USActionComponent;
 class USWorldCommonUserWidget;
 class USAttributeComponent;
 class UPawnSensingComponent;
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<USWorldCommonUserWidget> HealthWidgetInstance;
+
+	UPROPERTY(VisibleAnywhere, Category="Components")
+	TObjectPtr<USActionComponent> ActionComponent;
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USAttributeComponent> HealthComponent;

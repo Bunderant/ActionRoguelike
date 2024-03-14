@@ -7,6 +7,7 @@
 #include "BrainComponent.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "Actions/SActionComponent.h"
 #include "AI/SAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
@@ -19,6 +20,7 @@
 // Sets default values
 ASAICharacter::ASAICharacter()
 {
+	ActionComponent = CreateDefaultSubobject<USActionComponent>("ActionComponent");
 	HealthComponent = CreateDefaultSubobject<USAttributeComponent>("HealthComponent");
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComponent");
 

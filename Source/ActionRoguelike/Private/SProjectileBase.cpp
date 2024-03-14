@@ -3,8 +3,10 @@
 
 #include "SProjectileBase.h"
 
+#include "SAttributeComponent.h"
 #include "SGameplayFunctionLibrary.h"
 #include "Actions/SActionComponent.h"
+#include "Actions/SActionEffect.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -107,7 +109,13 @@ void ASProjectileBase::DefaultHit(AActor* OtherActor, const FHitResult& Hit)
 		return;
 	}
 	
-	USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, Hit);
+	if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, Hit) &&
+		ActionComp &&
+		ActionEffectClass != nullptr &&
+		USAttributeComponent::IsActorAlive(OtherActor))
+	{
+		ActionComp->AddAction(GetInstigator(), ActionEffectClass);
+	}
 
 	const FVector Location = Hit.bBlockingHit
 		? static_cast<FVector>(Hit.ImpactPoint)

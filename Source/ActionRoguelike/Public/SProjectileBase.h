@@ -7,6 +7,7 @@
 #include "GameFramework/Actor.h"
 #include "SProjectileBase.generated.h"
 
+class USActionEffect;
 class USphereComponent;
 class UProjectileMovementComponent;
 
@@ -23,6 +24,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FGameplayTag ParryingTag;
+
+	UPROPERTY(EditDefaultsOnly, Category="Actions")
+	TSubclassOf<USActionEffect> ActionEffectClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	bool bShouldBindOverlap;

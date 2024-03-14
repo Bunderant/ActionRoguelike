@@ -26,6 +26,9 @@ protected:
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FName ActionName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Actions")
+	bool bAutoStart;
 	
 	UFUNCTION(BlueprintNativeEvent, Category="Actions")
 	void StartAction(AActor* Instigator);
