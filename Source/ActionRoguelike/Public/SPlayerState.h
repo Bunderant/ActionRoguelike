@@ -6,7 +6,9 @@
 #include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
+class USAttributeComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCreditsValueChanged, int32, NumCredits, int32, Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnRageValueChanged, int32, RageAmount, int32, Delta);
 
 /**
  * 
@@ -17,6 +19,13 @@ class ACTIONROGUELIKE_API ASPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
+	ASPlayerState();
+	
+	virtual void PostInitializeComponents() override;
+	
+	UFUNCTION(BlueprintCallable, Category="State")
+	void ClearNonPersistentState();
+	
 	UPROPERTY(BlueprintAssignable, Category="Credits")
 	FOnCreditsValueChanged OnCreditsValueChanged;
 	
@@ -25,10 +34,37 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	bool DecrementCredits();
-
+	
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	int32 GetNumCredits() const;
+
+	UPROPERTY(BlueprintAssignable, Category="Rage")
+	FOnRageValueChanged OnRageValueChanged;
+	
+	UFUNCTION(BlueprintCallable, Category="Rage")
+	bool IncrementRage(int32 Amount);
+
+	UFUNCTION(BlueprintCallable, Category="Rage")
+	bool DecrementRage(int32 Amount);
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rage")
+	int32 MaxRage;
+
+	UFUNCTION(BlueprintPure)
+	int32 GetRageAmount() const { return RageAmount; }
+
+	void SetRageAmount(const int32 Value);
 	
 private:
 	int32 NumCredits;
+	
+	UPROPERTY(BlueprintGetter=GetRageAmount)
+	int32 RageAmount;
+
+	UFUNCTION()
+	void HandlePawnSet(APlayerState* Player, APawn* NewPawn, APawn* OldPawn);
+
+	UFUNCTION()
+	void OnPlayerHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);
 };

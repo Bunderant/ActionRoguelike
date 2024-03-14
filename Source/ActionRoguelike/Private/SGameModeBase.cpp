@@ -31,6 +31,20 @@ ASGameModeBase* ASGameModeBase::Get(const AActor* WorldContextObject)
 	return WorldContextObject->GetWorld()->GetAuthGameMode<ASGameModeBase>();
 }
 
+void ASGameModeBase::FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation)
+{
+	Super::FinishRestartPlayer(NewPlayer, StartRotation);
+
+	if (ASPlayerState* PlayerState = NewPlayer->GetPlayerState<ASPlayerState>())
+	{
+		PlayerState->ClearNonPersistentState();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player state is not of type %s."), *ASPlayerState::StaticClass()->GetName());
+	}
+}
+
 void ASGameModeBase::OnSpawnTimerElapsed()
 {
 	if (!CVarEnableBotSpawn->GetBool())
