@@ -68,7 +68,7 @@ bool ASPlayerState::IncrementRage(int32 Amount)
 
 bool ASPlayerState::DecrementRage(int32 Amount)
 {
-	if (!ensureAlways(Amount > 0) || RageAmount == 0)
+	if (!ensureAlways(Amount > 0) || RageAmount < Amount)
 		return false;
 
 	SetRageAmount(RageAmount - Amount);
