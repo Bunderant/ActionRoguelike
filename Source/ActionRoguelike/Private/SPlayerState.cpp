@@ -56,9 +56,7 @@ int32 ASPlayerState::GetNumCredits() const
 bool ASPlayerState::IncrementRage(int32 Amount)
 {
 	if (!ensureAlways(Amount > 0) || RageAmount == MaxRage)
-	{
 		return false;
-	}
 
 	SetRageAmount(RageAmount + Amount);
 
@@ -71,13 +69,19 @@ bool ASPlayerState::IncrementRage(int32 Amount)
 bool ASPlayerState::DecrementRage(int32 Amount)
 {
 	if (!ensureAlways(Amount > 0) || RageAmount == 0)
-	{
 		return false;
-	}
 
 	SetRageAmount(RageAmount - Amount);
 
 	return true;
+}
+
+float ASPlayerState::GetRagePercent() const
+{
+	if (!ensureAlwaysMsgf(MaxRage > 0, TEXT("MaxRage is set to 0, percentage will always be 0.")))
+		return 0.0f;
+	
+	return RageAmount / static_cast<float>(MaxRage);
 }
 
 void ASPlayerState::SetRageAmount(const int32 Value)

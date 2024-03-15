@@ -47,13 +47,16 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Rage")
 	bool DecrementRage(int32 Amount);
 
+	UFUNCTION(BlueprintPure, Category="Rage")
+	int32 GetRageAmount() const { return RageAmount; }
+
+	UFUNCTION(BlueprintPure, Category="Rage")
+	float GetRagePercent() const;
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Rage")
 	int32 MaxRage;
-
-	UFUNCTION(BlueprintPure)
-	int32 GetRageAmount() const { return RageAmount; }
-
+	
 	void SetRageAmount(const int32 Value);
 	
 private:
