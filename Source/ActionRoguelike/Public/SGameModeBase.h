@@ -23,8 +23,6 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 public:
 	UFUNCTION(BlueprintCallable, Category="Game Mode")
 	static ASGameModeBase* Get(const AActor* WorldContextObject);
-
-	virtual void FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation) override;
 	
 protected:
 

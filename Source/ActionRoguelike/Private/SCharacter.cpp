@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
+#include "SPlayerState.h"
 #include "Actions/SActionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -60,6 +61,15 @@ void ASCharacter::PossessedBy(AController* NewController)
 			// TODO: MDA: Expose the mapping's priority as a global setting
 			InputSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
 		}
+	}
+
+	if (ASPlayerState* CustomPlayerState = GetPlayerState<ASPlayerState>())
+	{
+		CustomPlayerState->ClearNonPersistentState();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player state is not of type %s."), *ASPlayerState::StaticClass()->GetName());
 	}
 }
 
