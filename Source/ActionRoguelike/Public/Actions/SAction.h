@@ -19,10 +19,10 @@ class ACTIONROGUELIKE_API USAction : public UObject
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FGameplayTagContainer GrantedTags;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FGameplayTagContainer BlockedTags;
-
+	
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FName ActionName;

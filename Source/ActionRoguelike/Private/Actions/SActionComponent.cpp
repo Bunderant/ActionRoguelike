@@ -93,3 +93,16 @@ bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionN
 	return false;
 }
 
+bool USActionComponent::CheckHasAction(const TSubclassOf<USAction> ActionClass) const
+{
+	for(TObjectPtr<USAction> Action : Actions)
+	{
+		if (Action && Action->IsA(ActionClass))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+

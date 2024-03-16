@@ -40,6 +40,9 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actions")
 	FGameplayTagContainer ActiveGameplayTags;
+
+	UFUNCTION(BlueprintCallable, Category="Actions")
+	bool CheckHasAction(const TSubclassOf<USAction> ActionClass) const;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
