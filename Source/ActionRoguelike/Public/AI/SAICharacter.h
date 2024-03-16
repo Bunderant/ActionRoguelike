@@ -27,8 +27,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> HealthWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> AlertWidgetClass;
+
 	UPROPERTY()
 	TObjectPtr<USWorldCommonUserWidget> HealthWidgetInstance;
+
+	UPROPERTY()
+	TObjectPtr<USWorldCommonUserWidget> AlertWidgetInstance;
 
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	TObjectPtr<USActionComponent> ActionComponent;

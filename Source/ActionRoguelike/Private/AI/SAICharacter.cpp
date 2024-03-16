@@ -43,12 +43,14 @@ void ASAICharacter::PostInitializeComponents()
 bool ASAICharacter::TrySetTargetActor(AActor* TargetActor) const
 {
 	if (TargetActor == nullptr || !TargetActor->IsA(ASCharacter::StaticClass()))
-	{
 		return false;
-	}
 
 	AAIController* AIC = Cast<AAIController>(GetController());
-	if (!AIC) return false;
+	if (!AIC)
+		return false;
+
+	if (const UObject* CurrentTargetActor = AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"); CurrentTargetActor == TargetActor)
+		return false;
 	
 	AIC->GetBlackboardComponent()->SetValueAsObject("TargetActor", TargetActor);
 
@@ -58,11 +60,25 @@ bool ASAICharacter::TrySetTargetActor(AActor* TargetActor) const
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
 	if (!TrySetTargetActor(Pawn))
-	{
 		return;
+
+	if (!ensureMsgf(AlertWidgetClass, TEXT("Alert widget class unassigned.")))
+		return;
+
+	if (AlertWidgetInstance == nullptr)
+	{
+		AlertWidgetInstance = CreateWidget<USWorldCommonUserWidget>(GetWorld(), AlertWidgetClass);
+		if (ensure(AlertWidgetInstance))
+		{
+			AlertWidgetInstance->AttachedActor = this;
+		}
 	}
 
-	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::Cyan, 0.666f, true);
+	if (!AlertWidgetInstance->IsInViewport())
+	{
+		// Logic to remove the widget from the viewport after a delay is handled by the widget blueprint graph
+		AlertWidgetInstance->AddToViewport();
+	}
 }
 
 void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
