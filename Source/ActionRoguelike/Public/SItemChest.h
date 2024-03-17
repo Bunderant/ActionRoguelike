@@ -15,14 +15,20 @@ class ACTIONROGUELIKE_API ASItemChest : public AActor, public ISGameplayInterfac
 public:
 	// Sets default values for this actor's properties
 	ASItemChest();
-
-	UFUNCTION(BlueprintGetter)
-	float GetOpenLidPitch() const;
 	
-	UPROPERTY(EditAnywhere, BlueprintGetter=GetOpenLidPitch, Category="Interact Config")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interact Config")
 	float OpenLidPitch;
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+protected:
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpen", BlueprintReadOnly, Category="State") // ReplidatedUsing == RepNotify in docs
+	bool bLidOpen;
+
+	UFUNCTION()
+	void OnRep_LidOpen();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category="Rendering", meta=(AllowPrivateAccess="true"))
