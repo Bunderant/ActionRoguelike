@@ -52,6 +52,21 @@ void ASCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	BindInput();
+}
+
+void ASCharacter::UnPossessed()
+{
+	Super::UnPossessed();
+
+	UnbindInput();
+}
+
+void ASCharacter::BindInput_Implementation()
+{
+	if (!IsValid(Controller))
+		return;
+	
 	if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
@@ -62,14 +77,21 @@ void ASCharacter::PossessedBy(AController* NewController)
 			InputSystem->AddMappingContext(InputMapping.LoadSynchronous(), 0);
 		}
 	}
+}
 
-	if (ASPlayerState* CustomPlayerState = GetPlayerState<ASPlayerState>())
+void ASCharacter::UnbindInput_Implementation()
+{
+	if (!IsValid(Controller))
+		return;
+	
+	if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
 	{
-		CustomPlayerState->ClearNonPersistentState();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Player state is not of type %s."), *ASPlayerState::StaticClass()->GetName());
+		// Remove the input mapping context if it hasn't been done already.
+		if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+			InputSystem->HasMappingContext(InputMapping.Get()))
+		{
+			InputSystem->RemoveMappingContext(InputMapping.Get());
+		}
 	}
 }
 
@@ -147,20 +169,20 @@ void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeCompon
 	}
 
 	GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParam, GetWorld()->TimeSeconds);
-	
-	if (Value <= 0.0f)
+}
+
+void ASCharacter::SetPlayerDefaults()
+{
+	Super::SetPlayerDefaults();
+
+	if (ASPlayerState* CustomPlayerState = GetPlayerState<ASPlayerState>())
 	{
-		if (const ULocalPlayer* LocalPlayer = Cast<APlayerController>(Controller)->GetLocalPlayer())
-		{
-			// Remove the input mapping context if it hasn't been done already.
-			if (UEnhancedInputLocalPlayerSubsystem* InputSystem = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-				InputSystem->HasMappingContext(InputMapping.Get()))
-			{
-				InputSystem->RemoveMappingContext(InputMapping.Get());
-			}
-		}
+		CustomPlayerState->ClearNonPersistentState();
 	}
-	
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player state is not of type %s."), *ASPlayerState::StaticClass()->GetName());
+	}
 }
 
 // Called every frame

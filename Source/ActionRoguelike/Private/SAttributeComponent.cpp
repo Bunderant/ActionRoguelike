@@ -48,8 +48,7 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 
 	if (ActualDelta < 0.0f && !IsAlive())
 	{
-		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
-		if (ensureAlways(GM))
+		if (ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>(); IsValid(GM))
 		{
 			GM->OnActorKilled(GetOwner(), InstigatorActor);
 		}

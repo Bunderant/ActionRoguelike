@@ -23,7 +23,10 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FindBestInteractable();
+	if (Cast<APawn>(GetOwner())->IsLocallyControlled())
+	{
+		FindBestInteractable();
+	}
 }
 
 void USInteractionComponent::FindBestInteractable()
@@ -62,7 +65,7 @@ void USInteractionComponent::FindBestInteractable()
 				8, 
 				bDidHit ? FColor::Green : FColor::Red, 
 				false, 
-				2.0f, 
+				0.0f, 
 				0, 
 				2.0f);
 		}
@@ -95,14 +98,20 @@ void USInteractionComponent::FindBestInteractable()
 
 	if (bShouldDebugDraw)
 	{
-		DrawDebugLine(GetWorld(), EyeLocation, End, bDidHit ? FColor::Green : FColor::Red, false, 2.0f, 0, 2.0f);
+		DrawDebugLine(GetWorld(), EyeLocation, End, bDidHit ? FColor::Green : FColor::Red, false, 0.0f, 0, 2.0f);
 	}
 }
 
 void USInteractionComponent::PrimaryInteract()
 {
-	if (!FocusedActor) return;
+	ServerInteract(FocusedActor);
+}
+
+void USInteractionComponent::ServerInteract_Implementation(AActor* InFocusedActor)
+{
+	if (!IsValid(InFocusedActor))
+		return;
 	
-	ISGameplayInterface::Execute_Interact(FocusedActor, Cast<APawn>(GetOwner()));
+	ISGameplayInterface::Execute_Interact(InFocusedActor, Cast<APawn>(GetOwner()));
 }
 

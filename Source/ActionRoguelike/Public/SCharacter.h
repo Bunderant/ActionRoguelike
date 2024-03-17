@@ -84,6 +84,8 @@ protected:
 	
 	virtual void PossessedBy(AController* NewController) override;
 
+	virtual void UnPossessed() override;
+
 	void Move(const FInputActionInstance& Instance);
 	void MoveCamera(const FInputActionInstance& Instance);
 	void PrimaryAttack(const FInputActionInstance& Instance);
@@ -97,7 +99,15 @@ protected:
 	UFUNCTION()
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);
 
-public:	
+public:
+	virtual void SetPlayerDefaults() override;
+
+	UFUNCTION(Client, Reliable)
+	void BindInput();
+	
+	UFUNCTION(Client, Reliable)
+	void UnbindInput();
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

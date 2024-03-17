@@ -24,6 +24,9 @@ public:
 	void PrimaryInteract();
 
 protected:
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocusedActor);
+	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<USWorldCommonUserWidget> DefaultFocusWidget;
 

@@ -179,16 +179,20 @@ void ASGameModeBase::RespawnPlayerDelayed(AController* PlayerController)
 
 void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 {
-	if (const ASCharacter* Player = Cast<ASCharacter>(Victim))
+	if (ASCharacter* Player = Cast<ASCharacter>(Victim))
 	{
+		Player->UnbindInput();
+		
 		FTimerHandle TimerHandle_RespawnDelay;
 		FTimerDelegate RespawnDelegate;
 		RespawnDelegate.BindUFunction(this, "RespawnPlayerDelayed", Player->GetController());
 
-		float RespawnDelay = 2.0f;
+		const float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, RespawnDelegate, RespawnDelay, false);
 	}
-	else if (const ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer); KillerPlayer && Victim->IsA(ASAICharacter::StaticClass()))
+
+	// Separate check to see if the "killer" was a player. Needs its own block to account for PvP scenarios
+	if (const ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer); KillerPlayer && Victim->IsA(ASAICharacter::StaticClass()))
 	{
 		ASPlayerState* PlayerState = KillerPlayer->GetPlayerState<ASPlayerState>();
 		PlayerState->IncrementCredits();
