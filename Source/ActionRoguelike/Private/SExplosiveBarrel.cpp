@@ -50,7 +50,7 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ASExplosiveBarrel::Explode()
+void ASExplosiveBarrel::Explode_Implementation()
 {
 	if (bHasAlreadyExploded)
 	{
