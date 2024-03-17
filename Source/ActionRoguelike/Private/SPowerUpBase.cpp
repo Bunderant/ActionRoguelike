@@ -9,6 +9,8 @@ ASPowerUpBase::ASPowerUpBase()
 {
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("Static Mesh");
 	RootComponent = StaticMesh;
+
+	bReplicates = true;
 }
 
 void ASPowerUpBase::Interact_Implementation(APawn* InstigatorPawn)

@@ -46,9 +46,12 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, meta=(AllowPrivateAccess="true"))
 	float Health;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, meta=(AllowPrivateAccess="true"))
 	float MaxHealth;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastHealthChanged(AActor* InstigatorActor, float Value, float Delta);
 };

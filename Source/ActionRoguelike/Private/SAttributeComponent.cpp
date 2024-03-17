@@ -4,6 +4,7 @@
 #include "SAttributeComponent.h"
 
 #include "SGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values for this component's properties
@@ -11,6 +12,8 @@ USAttributeComponent::USAttributeComponent()
 {
 	Health = 100.0f;
 	MaxHealth = 100.0f;
+
+	SetIsReplicatedByDefault(true);
 }
 
 USAttributeComponent* USAttributeComponent::GetAttribute(const AActor* Actor)
@@ -43,8 +46,11 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 	}
 
 	const float ActualDelta = Health - PreviousValue;
-	
-	OnAttributeChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
+
+	if (ActualDelta != 0.0f)
+	{
+		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
+	}
 
 	if (ActualDelta < 0.0f && !IsAlive())
 	{
@@ -85,5 +91,18 @@ float USAttributeComponent::GetHealthAsPercent() const
 	}
 
 	return Health / MaxHealth;
+}
+
+void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float Value, float Delta)
+{
+	OnAttributeChanged.Broadcast(InstigatorActor, this, Health, Delta);
+}
+
+void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAttributeComponent, Health);
+	DOREPLIFETIME(USAttributeComponent, MaxHealth);
 }
 
