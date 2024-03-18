@@ -9,6 +9,8 @@
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+	SetIsReplicatedByDefault(true);
 }
 
 void USActionComponent::BeginPlay()
@@ -67,6 +69,11 @@ bool USActionComponent::StartActionByName(AActor* Instigator, const FName Action
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, DebugMsg);
 				continue;
 			}
+
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStartAction(Instigator, ActionName);
+			}
 			
 			Action->StartAction(Instigator);
 			return true;
@@ -74,6 +81,11 @@ bool USActionComponent::StartActionByName(AActor* Instigator, const FName Action
 	}
 
 	return false;
+}
+
+void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, const FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
 }
 
 bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionName)

@@ -34,6 +34,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StartActionByName(AActor* Instigator, const FName ActionName);
 
+	UFUNCTION(Server, Reliable)
+	void ServerStartAction(AActor* Instigator, const FName ActionName);
+
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	bool StopActionByName(AActor* Instigator, const FName ActionName);
 
