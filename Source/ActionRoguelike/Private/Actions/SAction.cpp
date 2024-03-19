@@ -3,12 +3,15 @@
 
 #include "Actions/SAction.h"
 
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/SActionComponent.h"
 
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Action START: %s"), *GetNameSafe(this));
-	ensureAlways(!bIsRunning);
+	if (!ensureAlways(!bIsRunning))
+		return;
+	
+	LogToScreen(this, FString::Printf(TEXT("Action START: %s"), *GetNameSafe(this)), FColor::Green);
 
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantedTags);
 
@@ -17,8 +20,10 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Action STOP: %s"), *GetNameSafe(this));
-	ensureAlways(bIsRunning);
+	if (!ensureAlways(bIsRunning))
+		return;
+	
+	LogToScreen(this, FString::Printf(TEXT("Action STOP: %s"), *GetNameSafe(this)), FColor::Purple);
 	
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantedTags);
 
