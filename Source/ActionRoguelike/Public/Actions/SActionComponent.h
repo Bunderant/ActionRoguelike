@@ -51,6 +51,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	TArray<TSubclassOf<USAction>> DefaultActions;
 	
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<TObjectPtr<USAction>> Actions;
+
+public:
+	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 };

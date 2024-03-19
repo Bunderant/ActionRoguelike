@@ -47,6 +47,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Actions")
 	USActionComponent* GetOwningComponent() const;
 
+	virtual bool IsSupportedForNetworking() const override { return true; }
+
 protected:
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	bool bIsRunning;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
 };

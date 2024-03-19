@@ -5,6 +5,8 @@
 
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/SAction.h"
+#include "Engine/ActorChannel.h"
+#include "Net/UnrealNetwork.h"
 
 
 USActionComponent::USActionComponent()
@@ -18,9 +20,13 @@ void USActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (TSubclassOf<USAction> ActionClass : DefaultActions)
+	// The 'active' actions & list are replicated, so only add them from the server
+	if (GetOwner()->HasAuthority())
 	{
-		AddAction(GetOwner(), ActionClass);
+		for (const TSubclassOf<USAction> ActionClass : DefaultActions)
+		{
+			AddAction(GetOwner(), ActionClass);
+		}
 	}
 }
 
@@ -48,7 +54,7 @@ void USActionComponent::AddAction(AActor* InstigatorActor, TSubclassOf<USAction>
 {
 	if (!ensure(ActionClass)) return;
 	
-	TObjectPtr<USAction> Action = NewObject<USAction>(this, ActionClass);
+	USAction* Action = NewObject<USAction>(this, ActionClass);
 	if (!ensure(Action)) return;
 
 	Actions.Add(Action);
@@ -71,7 +77,7 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove)
 
 bool USActionComponent::StartActionByName(AActor* Instigator, const FName ActionName)
 {
-	for(TObjectPtr<USAction> Action : Actions)
+	for(USAction* Action : Actions)
 	{
 		if (Action && Action->ActionName == ActionName)
 		{
@@ -102,7 +108,7 @@ void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, con
 
 bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionName)
 {
-	for(TObjectPtr<USAction> Action : Actions)
+	for(USAction* Action : Actions)
 	{
 		if (Action && Action->ActionName == ActionName)
 		{
@@ -119,7 +125,7 @@ bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionN
 
 bool USActionComponent::CheckHasAction(const TSubclassOf<USAction> ActionClass) const
 {
-	for(TObjectPtr<USAction> Action : Actions)
+	for(const USAction* Action : Actions)
 	{
 		if (Action && Action->IsA(ActionClass))
 		{
@@ -128,5 +134,24 @@ bool USActionComponent::CheckHasAction(const TSubclassOf<USAction> ActionClass) 
 	}
 
 	return false;
+}
+
+bool USActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)
+{
+	bool bDidWrite = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
+
+	for (USAction* Action : Actions)
+	{
+		bDidWrite |= Channel->ReplicateSubobject(Action, *Bunch, *RepFlags);
+	}
+
+	return bDidWrite;
+}
+
+void USActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USActionComponent, Actions);
 }
 

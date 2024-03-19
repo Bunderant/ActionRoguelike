@@ -5,11 +5,12 @@
 
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/SActionComponent.h"
+#include "Net/UnrealNetwork.h"
 
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
-	if (!ensureAlways(!bIsRunning))
-		return;
+	// if (!ensureAlways(!bIsRunning))
+	// 	return;
 	
 	LogToScreen(this, FString::Printf(TEXT("Action START: %s"), *GetNameSafe(this)), FColor::Green);
 
@@ -20,8 +21,8 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
-	if (!ensureAlways(bIsRunning))
-		return;
+	// if (!ensureAlways(bIsRunning))
+	// 	return;
 	
 	LogToScreen(this, FString::Printf(TEXT("Action STOP: %s"), *GetNameSafe(this)), FColor::Purple);
 	
@@ -53,4 +54,19 @@ UWorld* USAction::GetWorld() const
 USActionComponent* USAction::GetOwningComponent() const
 {
 	return Cast<USActionComponent>(GetOuter());
+}
+
+void USAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+		StartAction(nullptr);
+	else
+		StopAction(nullptr);
+}
+
+void USAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAction, bIsRunning);
 }
