@@ -20,7 +20,7 @@ void USActionEffect_Thorns::StartAction_Implementation(AActor* Instigator)
 	if (!ensureMsgf(HealthComp, TEXT("Can't use Thorn effect on actor with no health attribute component.")))
 		return;
 
-	HealthComp->OnAttributeChanged.AddDynamic(this, &USActionEffect_Thorns::OnHealthChanged);
+	HealthComp->OnHealthChanged.AddDynamic(this, &USActionEffect_Thorns::OnHealthChanged);
 }
 
 void USActionEffect_Thorns::StopAction_Implementation(AActor* Instigator)
@@ -32,7 +32,7 @@ void USActionEffect_Thorns::StopAction_Implementation(AActor* Instigator)
 	if (HealthComp)
 		return;
 
-	HealthComp->OnAttributeChanged.RemoveDynamic(this, &USActionEffect_Thorns::OnHealthChanged);
+	HealthComp->OnHealthChanged.RemoveDynamic(this, &USActionEffect_Thorns::OnHealthChanged);
 }
 
 void USActionEffect_Thorns::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,

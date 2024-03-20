@@ -45,7 +45,7 @@ void ASCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	
-	HealthComponent->OnAttributeChanged.AddDynamic(this, &ASCharacter::HandleHealthChanged);
+	HealthComponent->OnHealthChanged.AddDynamic(this, &ASCharacter::HandleHealthChanged);
 }
 
 void ASCharacter::PossessedBy(AController* NewController)

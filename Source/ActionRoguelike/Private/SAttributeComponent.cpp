@@ -12,6 +12,9 @@ USAttributeComponent::USAttributeComponent()
 {
 	Health = 100.0f;
 	MaxHealth = 100.0f;
+	
+	Rage = 0.0f;
+	MaxRage = 100.0f;
 
 	SetIsReplicatedByDefault(true);
 }
@@ -63,6 +66,20 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 	return true;
 }
 
+bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	const int32 PreviousRage = Rage;
+	Rage = FMath::Clamp(Rage + Delta, 0, MaxRage);
+
+	if (Rage != PreviousRage)
+	{
+		OnRageChanged.Broadcast(InstigatorActor, this, Rage, Rage - PreviousRage);
+		return true;
+	}
+
+	return false;
+}
+
 bool USAttributeComponent::RecoverMaxHealth(AActor* InstigatorActor)
 {
 	return ApplyHealthChange(InstigatorActor, MaxHealth);
@@ -78,11 +95,6 @@ bool USAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
-bool USAttributeComponent::IsFull() const
-{
-	return FMath::IsNearlyEqual(Health, MaxHealth);
-}
-
 float USAttributeComponent::GetHealthAsPercent() const
 {
 	if (FMath::IsNearlyZero(MaxHealth) || FMath::IsNearlyZero(Health))
@@ -90,12 +102,23 @@ float USAttributeComponent::GetHealthAsPercent() const
 		return 0.0f;
 	}
 
-	return Health / MaxHealth;
+	return FMath::Clamp(Health / MaxHealth, 0.0f, 1.0f);
+}
+
+float USAttributeComponent::GetRageAsPercent() const
+{
+	if (!ensureAlwaysMsgf(MaxRage > 0, TEXT("MaxRage is set to 0, percentage will always be 0.")))
+		return 0.0f;
+	
+	return FMath::Clamp(Rage / MaxRage, 0.0f, 1.0f);
 }
 
 void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float Value, float Delta)
 {
-	OnAttributeChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+
+	// Update rage anytime health changes
+	ApplyRageChange(InstigatorActor, -Delta);
 }
 
 void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -104,5 +127,8 @@ void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 	DOREPLIFETIME(USAttributeComponent, Health);
 	DOREPLIFETIME(USAttributeComponent, MaxHealth);
+
+	DOREPLIFETIME(USAttributeComponent, Rage);
+	DOREPLIFETIME(USAttributeComponent, MaxRage);
 }
 

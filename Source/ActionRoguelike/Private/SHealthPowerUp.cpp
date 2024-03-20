@@ -29,7 +29,7 @@ bool ASHealthPowerUp::CheckCanInteract(const APawn* InstigatorPawn)
 		return false;
 	}
 
-	return !HealthAttribute->IsFull();
+	return !HealthAttribute->IsHealthFull();
 }
 
 void ASHealthPowerUp::Apply(APawn* InstigatorPawn)

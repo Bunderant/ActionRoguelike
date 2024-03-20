@@ -37,7 +37,7 @@ void ASAICharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	PawnSensingComponent->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
-	HealthComponent->OnAttributeChanged.AddDynamic(this, &ASAICharacter::HandleHealthChanged);
+	HealthComponent->OnHealthChanged.AddDynamic(this, &ASAICharacter::HandleHealthChanged);
 }
 
 bool ASAICharacter::TrySetTargetActor(AActor* TargetActor) const

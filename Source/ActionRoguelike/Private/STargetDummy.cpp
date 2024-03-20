@@ -22,7 +22,7 @@ void ASTargetDummy::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	HealthAttributeComponent->OnAttributeChanged.AddDynamic(this, &ASTargetDummy::HandleHealthChanged);
+	HealthAttributeComponent->OnHealthChanged.AddDynamic(this, &ASTargetDummy::HandleHealthChanged);
 }
 
 void ASTargetDummy::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,

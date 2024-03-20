@@ -20,17 +20,23 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attribute")
 	static USAttributeComponent* GetAttribute(const AActor* Actor);
 
-	UFUNCTION(BlueprintCallable, Category="Attribute", meta=(DisplayName="IsAlive"))
+	UFUNCTION(BlueprintCallable, Category="Health", meta=(DisplayName="IsAlive"))
 	static bool IsActorAlive(const AActor* Actor);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Health")
 	bool ApplyHealthChange(AActor* InstigatorActor, float Delta);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category="Rage")
+	bool ApplyRageChange(AActor* InstigatorActor, float Delta);
+
+	UFUNCTION(BlueprintCallable, Category="Health")
 	bool RecoverMaxHealth(AActor* InstigatorActor);
 
-	UPROPERTY(BlueprintAssignable, Category="Attribute")
-	FOnAttributeChanged OnAttributeChanged;
+	UPROPERTY(BlueprintAssignable, Category="Health")
+	FOnAttributeChanged OnHealthChanged;
+
+	UPROPERTY(BlueprintAssignable, Category="Rage")
+	FOnAttributeChanged OnRageChanged;
 
 	UFUNCTION(BlueprintCallable)
 	bool Kill(AActor* InstigatorActor);
@@ -38,19 +44,34 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
-	UFUNCTION(BlueprintCallable)
-	bool IsFull() const;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Health")
+	bool IsHealthFull() const { return FMath::IsNearlyEqual(Health, MaxHealth); }
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure, Category="Health")
+	float GetHealth() const { return Health; }
+
+	UFUNCTION(BlueprintPure, Category="Health")
 	float GetHealthAsPercent() const;
+
+	UFUNCTION(BlueprintPure, Category="Rage")
+	float GetRage() const { return Rage; }
+	
+	UFUNCTION(BlueprintPure, Category="Rage")
+	float GetRageAsPercent() const;
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter="GetHealth", Replicated, Category="Health")
 	float Health;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Replicated, meta=(AllowPrivateAccess="true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Health")
 	float MaxHealth;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintGetter="GetRage", Replicated, Category="Rage")
+	float Rage;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated, Category="Rage")
+	float MaxRage;
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastHealthChanged(AActor* InstigatorActor, float Value, float Delta);
