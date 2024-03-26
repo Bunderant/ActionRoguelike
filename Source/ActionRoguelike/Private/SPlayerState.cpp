@@ -3,8 +3,6 @@
 
 #include "SPlayerState.h"
 
-#include "SAttributeComponent.h"
-
 ASPlayerState::ASPlayerState()
 {
 	NumCredits = 0;

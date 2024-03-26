@@ -11,8 +11,11 @@
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "SPlayerState.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/SActionComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+
+static TAutoConsoleVariable CVarLogCharacterAttributes(TEXT("su.attrLogEnabled"), false, TEXT("On-screen log of current player attributes."), ECVF_Cheat);
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -189,6 +192,17 @@ void ASCharacter::SetPlayerDefaults()
 void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CVarLogCharacterAttributes->GetBool())
+	{
+		FString DebugMsg = FString::Printf(
+			TEXT("[%s] Health: %d - Rage: %d"),
+			*GetNameSafe(GetOwner()),
+			static_cast<int32>(HealthComponent->GetHealth()),
+			static_cast<int32>(HealthComponent->GetRage()));
+	
+		LogToScreen(this, DebugMsg, FColor::Orange, 0.0f);
+	}
 
 	// -- Rotation Visualization -- //
 	constexpr float DrawScale = 100.0f;

@@ -53,6 +53,11 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 	if (ActualDelta != 0.0f)
 	{
 		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
+
+		if (ActualDelta < 0.0f)
+		{
+			ApplyRageChange(InstigatorActor, -ActualDelta);
+		}
 	}
 
 	if (ActualDelta < 0.0f && !IsAlive())
@@ -73,7 +78,7 @@ bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 
 	if (Rage != PreviousRage)
 	{
-		OnRageChanged.Broadcast(InstigatorActor, this, Rage, Rage - PreviousRage);
+		MulticastRageChanged(InstigatorActor, Rage, Rage - PreviousRage);
 		return true;
 	}
 
@@ -115,10 +120,12 @@ float USAttributeComponent::GetRageAsPercent() const
 
 void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float Value, float Delta)
 {
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, Delta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, Value, Delta);
+}
 
-	// Update rage anytime health changes
-	ApplyRageChange(InstigatorActor, -Delta);
+void USAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigatorActor, float Value, float Delta)
+{
+	OnRageChanged.Broadcast(InstigatorActor, this, Value, Delta);
 }
 
 void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
