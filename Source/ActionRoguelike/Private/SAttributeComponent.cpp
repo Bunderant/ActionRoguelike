@@ -100,6 +100,11 @@ bool USAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
+/**
+ * @note Do not use from NetMulticast delegates when the value changes, since there is no guarantee the value itself is
+ * up-to-date. 
+ * @return Normalized Health
+ */
 float USAttributeComponent::GetHealthAsPercent() const
 {
 	if (FMath::IsNearlyZero(MaxHealth) || FMath::IsNearlyZero(Health))
@@ -110,6 +115,11 @@ float USAttributeComponent::GetHealthAsPercent() const
 	return FMath::Clamp(Health / MaxHealth, 0.0f, 1.0f);
 }
 
+/**
+ * @note Do not use from NetMulticast delegates when the value changes, since there is no guarantee the value itself is
+ * up-to-date. 
+ * @return Normalized Rage
+ */
 float USAttributeComponent::GetRageAsPercent() const
 {
 	if (!ensureAlwaysMsgf(MaxRage > 0, TEXT("MaxRage is set to 0, percentage will always be 0.")))
