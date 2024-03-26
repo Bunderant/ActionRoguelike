@@ -13,6 +13,9 @@ ASPowerUp_Action::ASPowerUp_Action()
 
 bool ASPowerUp_Action::CheckCanInteract(const APawn* InstigatorPawn)
 {
+	if (!Super::CheckCanInteract(InstigatorPawn))
+		return false;
+	
 	if (!ensure(ActionClass))
 		return false;
 	
@@ -34,5 +37,6 @@ void ASPowerUp_Action::Apply(APawn* InstigatorPawn)
 	ActionComp->AddAction(InstigatorPawn, ActionClass);
 
 	Hide();
+	StartCooldownTimer();
 }
 

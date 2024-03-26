@@ -26,7 +26,14 @@ protected:
 	virtual void Apply(APawn* InstigatorPawn);
 	virtual void Hide();
 	virtual void Show();
+	void StartCooldownTimer();
+	virtual void FinishCooldown();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float CooldownTime;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta=(AllowPrivateAccess="true"))
 	TObjectPtr<UStaticMeshComponent> StaticMesh;
+	
+	FTimerHandle CooldownTimerHandle;
 };

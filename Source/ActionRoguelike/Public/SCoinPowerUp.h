@@ -11,14 +11,6 @@ class ACTIONROGUELIKE_API ASCoinPowerUp : public ASPowerUpBase
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this actor's properties
-	ASCoinPowerUp();
-
 protected:
-	virtual bool CheckCanInteract(const APawn* InstigatorPawn) override;
 	virtual void Apply(APawn* InstigatorPawn) override;
-
-public:
-	
 };

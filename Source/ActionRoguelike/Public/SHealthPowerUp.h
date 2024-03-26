@@ -20,15 +20,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float HealthAmount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float CooldownTime;
-
 	virtual bool CheckCanInteract(const APawn* InstigatorPawn) override;
 	virtual void Apply(APawn* InstigatorPawn) override;
-
-private:
-
-	FTimerHandle CooldownTimerHandle;
-
-	void FinishCooldown();
 };
