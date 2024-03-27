@@ -26,8 +26,17 @@ protected:
 	virtual void Apply(APawn* InstigatorPawn);
 	virtual void Hide();
 	virtual void Show();
+	
+	UFUNCTION(Server, Reliable)
 	void StartCooldownTimer();
+	
 	virtual void FinishCooldown();
+
+	UFUNCTION(Server, Reliable)
+	void ServerHide();
+
+	UFUNCTION(Server, Reliable)
+	void ServerShow();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float CooldownTime;
@@ -36,4 +45,10 @@ protected:
 	TObjectPtr<UStaticMeshComponent> StaticMesh;
 	
 	FTimerHandle CooldownTimerHandle;
+
+	UPROPERTY(ReplicatedUsing="OnRep_IsVisible")
+	bool bIsVisible;
+
+	UFUNCTION()
+	void OnRep_IsVisible();
 };
