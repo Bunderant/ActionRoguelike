@@ -11,15 +11,9 @@ class ACTIONROGUELIKE_API ASAIController : public AAIController
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this actor's properties
-	ASAIController();
-
 protected:
+	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
-	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 };

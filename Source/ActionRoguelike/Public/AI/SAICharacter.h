@@ -55,4 +55,7 @@ protected:
 
 	UFUNCTION()
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastNotifyPawnSeen();
 };

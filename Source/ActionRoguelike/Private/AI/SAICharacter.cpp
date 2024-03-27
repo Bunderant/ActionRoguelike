@@ -42,13 +42,14 @@ void ASAICharacter::PostInitializeComponents()
 
 bool ASAICharacter::TrySetTargetActor(AActor* TargetActor) const
 {
-	if (TargetActor == nullptr || !TargetActor->IsA(ASCharacter::StaticClass()))
+	if (!IsValid(TargetActor) || !TargetActor->IsA(ASCharacter::StaticClass()))
 		return false;
 
 	AAIController* AIC = Cast<AAIController>(GetController());
 	if (!AIC)
 		return false;
 
+	// @fixme: In multiplayer, the "seen" player pawn can quickly cycle between players, need more logic to govern this.
 	if (const UObject* CurrentTargetActor = AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"); CurrentTargetActor == TargetActor)
 		return false;
 	
@@ -65,20 +66,8 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	if (!ensureMsgf(AlertWidgetClass, TEXT("Alert widget class unassigned.")))
 		return;
 
-	if (AlertWidgetInstance == nullptr)
-	{
-		AlertWidgetInstance = CreateWidget<USWorldCommonUserWidget>(GetWorld(), AlertWidgetClass);
-		if (ensure(AlertWidgetInstance))
-		{
-			AlertWidgetInstance->AttachedActor = this;
-		}
-	}
-
-	if (!AlertWidgetInstance->IsInViewport())
-	{
-		// Logic to remove the widget from the viewport after a delay is handled by the widget blueprint graph
-		AlertWidgetInstance->AddToViewport();
-	}
+	// No need to check whether we're on the server, since AI runs server-only anyway
+	MulticastNotifyPawnSeen();
 }
 
 void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value,
@@ -117,5 +106,25 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 	else
 	{
 		TrySetTargetActor(InstigatorActor);
+	}
+}
+
+void ASAICharacter::MulticastNotifyPawnSeen_Implementation()
+{
+	UE_LOG(LogTemp, Warning, TEXT("SEEN"));
+	
+	if (AlertWidgetInstance == nullptr)
+	{
+		AlertWidgetInstance = CreateWidget<USWorldCommonUserWidget>(GetWorld(), AlertWidgetClass);
+		if (ensure(AlertWidgetInstance))
+		{
+			AlertWidgetInstance->AttachedActor = this;
+		}
+	}
+
+	if (!AlertWidgetInstance->IsInViewport())
+	{
+		// Logic to remove the widget from the viewport after a delay is handled by the widget blueprint graph
+		AlertWidgetInstance->AddToViewport();
 	}
 }

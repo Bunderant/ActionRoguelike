@@ -3,16 +3,6 @@
 
 #include "AI/SAIController.h"
 
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Kismet/GameplayStatics.h"
-
-
-// Sets default values
-ASAIController::ASAIController()
-{
-}
-
-// Called when the game starts or when spawned
 void ASAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -21,12 +11,5 @@ void ASAIController::BeginPlay()
 	{
 		RunBehaviorTree(BehaviorTree);
 	}
-
-	// APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	// if (PlayerPawn)
-	// {
-	// 	GetBlackboardComponent()->SetValueAsVector("TargetLocation", PlayerPawn->GetActorLocation());
-	// 	GetBlackboardComponent()->SetValueAsObject("TargetActor", PlayerPawn);
-	// }
 }
 
