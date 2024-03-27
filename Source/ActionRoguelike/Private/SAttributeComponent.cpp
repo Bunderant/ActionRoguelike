@@ -80,15 +80,21 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 {
 	const int32 PreviousRage = Rage;
-	Rage = FMath::Clamp(Rage + Delta, 0, MaxRage);
+	const int32 NewRage = FMath::Clamp(Rage + Delta, 0, MaxRage);
 
-	if (Rage != PreviousRage)
+	const int32 ActualDelta = NewRage - PreviousRage;
+	if (ActualDelta == 0)
+		return false;
+
+	// Only update rage directly on server (replicated), then notify the network
+	if (!GetOwner()->IsNetMode(NM_Client))
 	{
-		MulticastRageChanged(InstigatorActor, Rage, Rage - PreviousRage);
-		return true;
+		Rage = NewRage;
+		MulticastRageChanged(InstigatorActor, NewRage, ActualDelta);
 	}
 
-	return false;
+	// ActualDelta is non-zero, so return true
+	return true;
 }
 
 bool USAttributeComponent::RecoverMaxHealth(AActor* InstigatorActor)
