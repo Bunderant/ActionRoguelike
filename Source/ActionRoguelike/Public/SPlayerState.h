@@ -31,10 +31,14 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	bool DecrementCredits();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCreditsChanged(float Value, float Delta);
 	
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	int32 GetNumCredits() const;
 	
-private:
+protected:
+	UPROPERTY(VisibleInstanceOnly, Replicated, Category="Credits")
 	int32 NumCredits;
 };

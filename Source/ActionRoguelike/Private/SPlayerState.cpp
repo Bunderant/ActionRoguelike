@@ -3,9 +3,13 @@
 
 #include "SPlayerState.h"
 
+#include "Net/UnrealNetwork.h"
+
 ASPlayerState::ASPlayerState()
 {
 	NumCredits = 0;
+
+	bReplicates = true;
 }
 
 void ASPlayerState::ClearNonPersistentState()
@@ -21,7 +25,7 @@ bool ASPlayerState::IncrementCredits()
 	}
 	
 	NumCredits++;
-	OnCreditsValueChanged.Broadcast(NumCredits, 1);
+	MulticastCreditsChanged(NumCredits, 1);
 	return true;
 }
 
@@ -33,12 +37,24 @@ bool ASPlayerState::DecrementCredits()
 	}
 	
 	NumCredits--;
-	OnCreditsValueChanged.Broadcast(NumCredits, -1);
+	MulticastCreditsChanged(NumCredits, -1);
 	return true;
+}
+
+void ASPlayerState::MulticastCreditsChanged_Implementation(float Value, float Delta)
+{
+	OnCreditsValueChanged.Broadcast(Value, Delta);
 }
 
 int32 ASPlayerState::GetNumCredits() const
 {
 	return NumCredits;
+}
+
+void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPlayerState, NumCredits);
 }
 
