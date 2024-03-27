@@ -39,35 +39,41 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 		return false;
 	}
 	
-	const float PreviousValue = Health;
+	const float PreviousHealth = Health;
 	
-	Health = FMath::Clamp(Health + Delta, 0, MaxHealth);
+	const float NewHealth = FMath::Clamp(Health + Delta, 0, MaxHealth);
 
-	if (FMath::IsNearlyEqual(PreviousValue,Health))
+	if (FMath::IsNearlyEqual(PreviousHealth,NewHealth))
 	{
 		return false;
 	}
 
-	const float ActualDelta = Health - PreviousValue;
+	const float ActualDelta = NewHealth - PreviousHealth;
 
-	if (ActualDelta != 0.0f)
+	// Only apply the health change server-side, the the network will be notified via the multicast delegate
+	if (!GetOwner()->IsNetMode(NM_Client))
 	{
-		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
-
-		if (ActualDelta < 0.0f)
+		if (ActualDelta != 0.0f)
 		{
-			ApplyRageChange(InstigatorActor, -ActualDelta);
+			Health = NewHealth;
+			MulticastHealthChanged(InstigatorActor, NewHealth, ActualDelta);
+
+			if (ActualDelta < 0.0f)
+			{
+				ApplyRageChange(InstigatorActor, -ActualDelta);
+			}
+		}
+
+		if (ActualDelta < 0.0f && !IsAlive())
+		{
+			if (ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>(); IsValid(GM))
+			{
+				GM->OnActorKilled(GetOwner(), InstigatorActor);
+			}
 		}
 	}
 
-	if (ActualDelta < 0.0f && !IsAlive())
-	{
-		if (ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>(); IsValid(GM))
-		{
-			GM->OnActorKilled(GetOwner(), InstigatorActor);
-		}
-	}
-	
+	// We've bailed early already if the prev value wasn't equal to the new, just return "true"
 	return true;
 }
 
