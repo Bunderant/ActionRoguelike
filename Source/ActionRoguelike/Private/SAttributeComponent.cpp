@@ -51,7 +51,7 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, const floa
 	const float ActualDelta = NewHealth - PreviousHealth;
 
 	// Only apply the health change server-side, the the network will be notified via the multicast delegate
-	if (!GetOwner()->IsNetMode(NM_Client))
+	if (GetOwner()->HasAuthority())
 	{
 		if (ActualDelta != 0.0f)
 		{
@@ -87,7 +87,7 @@ bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 		return false;
 
 	// Only update rage directly on server (replicated), then notify the network
-	if (!GetOwner()->IsNetMode(NM_Client))
+	if (GetOwner()->HasAuthority())
 	{
 		Rage = NewRage;
 		MulticastRageChanged(InstigatorActor, NewRage, ActualDelta);
