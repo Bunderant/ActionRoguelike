@@ -40,11 +40,9 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	for (const USAction* Action : Actions)
 	{
-		const FString DebugMsg = FString::Printf(TEXT("[%s] Action: %s : IsRunning: %s : Outer: %s"),
+		const FString DebugMsg = FString::Printf(TEXT("[%s] Action: %s"),
 			*GetNameSafe(GetOwner()),
-			*Action->ActionName.ToString(),
-			Action->IsRunning() ? TEXT("true") : TEXT("false"),
-			*GetNameSafe(GetOuter()));
+			*GetNameSafe(Action));
 
 		LogToScreen(this, DebugMsg, Action->IsRunning() ? FColor::Blue : FColor::White, 0.0f);
 	}
