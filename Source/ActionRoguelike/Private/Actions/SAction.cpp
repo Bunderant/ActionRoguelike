@@ -7,12 +7,12 @@
 #include "Actions/SActionComponent.h"
 #include "Net/UnrealNetwork.h"
 
+static FAutoConsoleVariable CVarLogActionEnabled(TEXT("su.logActionsVerbose"), false, TEXT("Toggles on-screen Action logging."), ECVF_Cheat);
+
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
-	// if (!ensureAlways(!bIsRunning))
-	// 	return;
-	
-	LogToScreen(this, FString::Printf(TEXT("Action START: %s"), *GetNameSafe(this)), FColor::Green);
+	if (CVarLogActionEnabled->GetBool())
+		LogToScreen(this, FString::Printf(TEXT("Action START: %s"), *GetNameSafe(this)), FColor::Green);
 
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantedTags);
 
@@ -21,10 +21,8 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
-	// if (!ensureAlways(bIsRunning))
-	// 	return;
-	
-	LogToScreen(this, FString::Printf(TEXT("Action STOP: %s"), *GetNameSafe(this)), FColor::Purple);
+	if (CVarLogActionEnabled->GetBool())
+		LogToScreen(this, FString::Printf(TEXT("Action STOP: %s"), *GetNameSafe(this)), FColor::Purple);
 	
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantedTags);
 
