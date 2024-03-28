@@ -8,6 +8,19 @@
 #include "SAction.generated.h"
 
 class USActionComponent;
+
+USTRUCT()
+struct FRepData
+{
+	GENERATED_BODY();
+
+	UPROPERTY()
+	bool bIsRunning;
+
+	UPROPERTY()
+	TObjectPtr<AActor> Instigator;
+};
+
 /**
  * 
  */
@@ -50,9 +63,9 @@ public:
 	virtual bool IsSupportedForNetworking() const override { return true; }
 
 protected:
-	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
-	bool bIsRunning;
+	UPROPERTY(ReplicatedUsing="OnRep_RepData")
+	FRepData RepData;
 
 	UFUNCTION()
-	void OnRep_IsRunning();
+	void OnRep_RepData();
 };
