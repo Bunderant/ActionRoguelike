@@ -37,11 +37,15 @@ void USAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator)
 			EAttachLocation::SnapToTarget);
 	}
 
-	FTimerHandle Handle;
-	FTimerDelegate Delegate;
-	Delegate.BindUFunction(this, "AttackDelay_Elapsed", Character);
+	// Only spawn the projectile on the server (projectile itself is replicated)
+	if (Character->HasAuthority())
+	{
+		FTimerHandle Handle;
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "AttackDelay_Elapsed", Character);
 
-	GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, Spawn_Delay, false);
+		GetWorld()->GetTimerManager().SetTimer(Handle, Delegate, Spawn_Delay, false);
+	}
 }
 
 void USAction_ProjectileAttack::AttackDelay_Elapsed(ACharacter* InstigatorCharacter)

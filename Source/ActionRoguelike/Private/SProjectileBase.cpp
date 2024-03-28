@@ -41,6 +41,8 @@ ASProjectileBase::ASProjectileBase()
 	bShouldBindHit = true;
 	DamageAmount = 20.0f;
 	CameraShakeRadius = 500.0f;
+
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
