@@ -171,6 +171,11 @@ void ASCharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeCompon
 		return;
 	}
 
+	if (Value <= 0.0f)
+	{
+		SetLifeSpan(5.0f);
+	}
+
 	GetMesh()->SetScalarParameterValueOnMaterials(HitFlashTimeParam, GetWorld()->TimeSeconds);
 }
 
