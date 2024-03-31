@@ -48,6 +48,12 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 void USActionComponent::AddAction(AActor* InstigatorActor, TSubclassOf<USAction> ActionClass)
 {
 	if (!ensure(ActionClass)) return;
+
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attempted to add action [%s] from the client."), *ActionClass->GetName());
+		return;
+	}
 	
 	USAction* Action = NewObject<USAction>(this, ActionClass);
 	if (!ensure(Action)) return;
@@ -101,6 +107,11 @@ void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, con
 	StartActionByName(Instigator, ActionName);
 }
 
+void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, const FName ActionName)
+{
+	StopActionByName(Instigator, ActionName);
+}
+
 bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionName)
 {
 	for(USAction* Action : Actions)
@@ -109,6 +120,11 @@ bool USActionComponent::StopActionByName(AActor* Instigator, const FName ActionN
 		{
 			if (Action->IsRunning())
 			{
+				if (!GetOwner()->HasAuthority())
+				{
+					ServerStopAction(Instigator, ActionName);
+				}
+				
 				Action->StopAction(Instigator);
 				return true;
 			}

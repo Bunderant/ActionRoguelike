@@ -114,6 +114,7 @@ void ASProjectileBase::DefaultHit(AActor* OtherActor, const FHitResult& Hit)
 	if (USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, Hit) &&
 		ActionComp &&
 		ActionEffectClass != nullptr &&
+		GetOwner()->HasAuthority() &&
 		USAttributeComponent::IsActorAlive(OtherActor))
 	{
 		ActionComp->AddAction(GetInstigator(), ActionEffectClass);
