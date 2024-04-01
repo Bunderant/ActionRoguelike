@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "SGameModeBase.generated.h"
 
+class USSaveGame;
 struct FEnvQueryResult;
 class UEnvQuery;
 /**
@@ -18,13 +19,22 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 
 	ASGameModeBase();
 
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
 	virtual void StartPlay() override;
+
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
 public:
 	UFUNCTION(BlueprintCallable, Category="Game Mode")
 	static ASGameModeBase* Get(const AActor* WorldContextObject);
 	
 protected:
+
+	FString SaveSlot;
+
+	UPROPERTY()
+	TObjectPtr<USSaveGame> CurrentSaveGame;
 
 	UPROPERTY(EditAnywhere, Category="Power-ups")
 	TSubclassOf<AActor> HealthPowerUpClass;
@@ -72,4 +82,10 @@ public:
 
 	UFUNCTION(Exec)
 	void KillAll();
+
+	UFUNCTION(BlueprintCallable, Category="Save/Load")
+	void SaveGame();
+
+	UFUNCTION()
+	void LoadGame();
 };

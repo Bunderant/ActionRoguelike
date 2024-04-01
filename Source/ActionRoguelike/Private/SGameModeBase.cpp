@@ -7,14 +7,26 @@
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
 #include "SPlayerState.h"
+#include "SSaveGame.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "GameFramework/GameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 
 static TAutoConsoleVariable CVarEnableBotSpawn(TEXT("su.botSpawnEnabled"), true, TEXT("Allow bot spawning at configured time interval."), ECVF_Cheat);
 
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnInterval = 2.0f;
+
+	SaveSlot = "SaveSlot01";
+}
+
+void ASGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
+{
+	Super::InitGame(MapName, Options, ErrorMessage);
+
+	LoadGame();
 }
 
 void ASGameModeBase::StartPlay()
@@ -24,6 +36,24 @@ void ASGameModeBase::StartPlay()
 	GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &ASGameModeBase::OnSpawnTimerElapsed, SpawnInterval, true);
 
 	SpawnPowerUps();
+}
+
+void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
+{
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
+
+	if (ASPlayerState* PlayerState = NewPlayer->GetPlayerState<ASPlayerState>())
+	{
+		PlayerState->LoadFromSavedGame(CurrentSaveGame);
+	}
+	else
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("[%s]: Failed to update player state from saved game data."),
+			*GetNameSafe(NewPlayer));
+	}
 }
 
 ASGameModeBase* ASGameModeBase::Get(const AActor* WorldContextObject)
@@ -211,4 +241,36 @@ void ASGameModeBase::KillAll()
 			HealthAttribute->Kill(this); // @fixme: use player as instigator rather than game mode instance
 		}
 	}
+}
+
+void ASGameModeBase::SaveGame()
+{
+	if (!ensureAlways(!SaveSlot.IsEmpty()))
+		return;
+	
+	if (!ensureAlwaysMsgf(IsValid(CurrentSaveGame), TEXT("Always call \"LoadGame\" before \"SaveGame\" to create the object.")))
+		return;
+
+	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
+	{
+		if (ASPlayerState* PlayerState = Cast<ASPlayerState>(GameState->PlayerArray[i]))
+		{
+			PlayerState->WriteToSavedGame(CurrentSaveGame);
+			break; // @todo: Update to support multiplayer
+		}
+	}
+
+	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SaveSlot, 0);
+}
+
+void ASGameModeBase::LoadGame()
+{
+	if (!ensureAlways(!SaveSlot.IsEmpty()))
+		return;
+	
+	CurrentSaveGame = UGameplayStatics::DoesSaveGameExist(SaveSlot, 0)
+		? Cast<USSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot, 0))
+		: Cast<USSaveGame>(UGameplayStatics::CreateSaveGameObject(USSaveGame::StaticClass()));
+
+	ensureAlwaysMsgf(CurrentSaveGame, TEXT("Failed to load or create game 'save' object."));
 }

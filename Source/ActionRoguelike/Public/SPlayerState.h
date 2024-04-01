@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SSaveGame.h"
 #include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
+class USSaveGame;
 class USAttributeComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCreditsValueChanged, int32, NumCredits, int32, Delta);
 
@@ -37,6 +39,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="Credits")
 	int32 GetNumCredits() const;
+
+	UFUNCTION(BlueprintNativeEvent, Category="Save/Load")
+	void WriteToSavedGame(USSaveGame* SaveGameObject) const;
+
+	UFUNCTION(BlueprintNativeEvent, Category="Save/Load")
+	void LoadFromSavedGame(const USSaveGame* SaveGameObject);
 	
 protected:
 	UPROPERTY(VisibleInstanceOnly, Replicated, Category="Credits")
