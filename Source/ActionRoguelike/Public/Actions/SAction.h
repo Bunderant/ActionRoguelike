@@ -15,7 +15,7 @@ struct FRepData
 	GENERATED_BODY();
 
 	UPROPERTY()
-	bool bIsRunning;
+	bool bIsRunning = false;
 
 	UPROPERTY()
 	TObjectPtr<AActor> Instigator;
