@@ -306,17 +306,17 @@ void ASGameModeBase::LoadGame()
 			if (ActorData.ActorName == Actor->GetName())
 			{
 				Actor->SetActorTransform(ActorData.Transform);
+
+				FMemoryReader MemoryReader(ActorData.ByteData);
+				FObjectAndNameAsStringProxyArchive Ar(MemoryReader, true);
+				// Find only properties with the SaveGame specifier
+				Ar.ArIsSaveGame = true;
+				// Calling "serialize" with a FMemoryReader actually DE-serializes the data into the Actor's variables
+				Actor->Serialize(Ar);
+
+				ISGameplayInterface::Execute_OnActorLoaded(Actor);
 				break;
 			}
-
-			FMemoryReader MemoryReader(ActorData.ByteData);
-			FObjectAndNameAsStringProxyArchive Ar(MemoryReader, true);
-			// Find only properties with the SaveGame specifier
-			Ar.ArIsSaveGame = true;
-			// Calling "serialize" with a FMemoryReader actually DE-serializes the data into the Actor's variables
-			Actor->Serialize(Ar);
-
-			ISGameplayInterface::Execute_OnActorLoaded(Actor);
 		}
 	}
 
