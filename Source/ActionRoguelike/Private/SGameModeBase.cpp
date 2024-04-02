@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SGameplayInterface.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
 #include "AI/SAICharacter.h"
@@ -260,6 +261,21 @@ void ASGameModeBase::SaveGame()
 		}
 	}
 
+	CurrentSaveGame->SavedActors.Empty();
+
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor->Implements<USGameplayInterface>())
+			continue;
+
+		FActorSaveData ActorData;
+		ActorData.ActorName = Actor->GetName();
+		ActorData.Transform = Actor->GetActorTransform();
+
+		CurrentSaveGame->SavedActors.Add(ActorData);
+	}
+
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SaveSlot, 0);
 }
 
@@ -271,6 +287,22 @@ void ASGameModeBase::LoadGame()
 	CurrentSaveGame = UGameplayStatics::DoesSaveGameExist(SaveSlot, 0)
 		? Cast<USSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlot, 0))
 		: Cast<USSaveGame>(UGameplayStatics::CreateSaveGameObject(USSaveGame::StaticClass()));
+
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor->Implements<USGameplayInterface>())
+			continue;
+		
+		for (FActorSaveData ActorData : CurrentSaveGame->SavedActors)
+		{
+			if (ActorData.ActorName == Actor->GetName())
+			{
+				Actor->SetActorTransform(ActorData.Transform);
+				break;
+			}
+		}
+	}
 
 	ensureAlwaysMsgf(CurrentSaveGame, TEXT("Failed to load or create game 'save' object."));
 }
