@@ -19,12 +19,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Interact Config")
 	float OpenLidPitch;
 
+	virtual void OnActorLoaded_Implementation() override;
+
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
-	UPROPERTY(ReplicatedUsing="OnRep_LidOpen", BlueprintReadOnly, Category="State") // ReplidatedUsing == RepNotify in docs
+	UPROPERTY(SaveGame, ReplicatedUsing="OnRep_LidOpen", BlueprintReadOnly, Category="State") // ReplicatedUsing == RepNotify in docs
 	bool bLidOpen;
 
 	UFUNCTION()

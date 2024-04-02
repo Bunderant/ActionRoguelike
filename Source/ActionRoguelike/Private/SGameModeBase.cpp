@@ -13,6 +13,7 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 
 static TAutoConsoleVariable CVarEnableBotSpawn(TEXT("su.botSpawnEnabled"), true, TEXT("Allow bot spawning at configured time interval."), ECVF_Cheat);
 
@@ -273,6 +274,12 @@ void ASGameModeBase::SaveGame()
 		ActorData.ActorName = Actor->GetName();
 		ActorData.Transform = Actor->GetActorTransform();
 
+		FMemoryWriter MemoryWriter(ActorData.ByteData);
+		FObjectAndNameAsStringProxyArchive Ar(MemoryWriter, true);
+		// Find only properties with the SaveGame specifier
+		Ar.ArIsSaveGame = true;
+		Actor->Serialize(Ar);
+
 		CurrentSaveGame->SavedActors.Add(ActorData);
 	}
 
@@ -301,6 +308,15 @@ void ASGameModeBase::LoadGame()
 				Actor->SetActorTransform(ActorData.Transform);
 				break;
 			}
+
+			FMemoryReader MemoryReader(ActorData.ByteData);
+			FObjectAndNameAsStringProxyArchive Ar(MemoryReader, true);
+			// Find only properties with the SaveGame specifier
+			Ar.ArIsSaveGame = true;
+			// Calling "serialize" with a FMemoryReader actually DE-serializes the data into the Actor's variables
+			Actor->Serialize(Ar);
+
+			ISGameplayInterface::Execute_OnActorLoaded(Actor);
 		}
 	}
 
