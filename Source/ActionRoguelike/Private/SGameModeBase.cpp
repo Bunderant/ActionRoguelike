@@ -42,8 +42,6 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-
 	if (ASPlayerState* PlayerState = NewPlayer->GetPlayerState<ASPlayerState>())
 	{
 		PlayerState->LoadFromSavedGame(CurrentSaveGame);
@@ -56,6 +54,9 @@ void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* N
 			TEXT("[%s]: Failed to update player state from saved game data."),
 			*GetNameSafe(NewPlayer));
 	}
+
+	// Call SUPER later, since we want to load the player state before any other initialization here
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }
 
 ASGameModeBase* ASGameModeBase::Get(const AActor* WorldContextObject)
