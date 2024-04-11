@@ -10,7 +10,7 @@
 /**
  * 
  */
-UCLASS(Blueprintable)
+UCLASS()
 class ACTIONROGUELIKE_API USGameUIManagerSubsystem : public UGameUIManagerSubsystem
 {
 	GENERATED_BODY()
