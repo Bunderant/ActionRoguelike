@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonPlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "SPlayerController.generated.h"
 
@@ -11,7 +12,7 @@ class ASPlayerState;
  * 
  */
 UCLASS()
-class ACTIONROGUELIKE_API ASPlayerController : public APlayerController
+class ACTIONROGUELIKE_API ASPlayerController : public ACommonPlayerController
 {
 	GENERATED_BODY()
 

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ModularPlayerState.h"
 #include "SSaveGame.h"
-#include "GameFramework/PlayerState.h"
 #include "SPlayerState.generated.h"
 
 class USSaveGame;
@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCreditsValueChanged, int32, NumC
  * 
  */
 UCLASS()
-class ACTIONROGUELIKE_API ASPlayerState : public APlayerState
+class ACTIONROGUELIKE_API ASPlayerState : public AModularPlayerState
 {
 	GENERATED_BODY()
 

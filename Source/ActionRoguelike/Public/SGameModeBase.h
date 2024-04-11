@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "ModularGameMode.h"
 #include "SGameModeBase.generated.h"
 
 class USSaveGame;
@@ -13,7 +13,7 @@ class UEnvQuery;
  * 
  */
 UCLASS()
-class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
+class ACTIONROGUELIKE_API ASGameModeBase : public AModularGameMode
 {
 	GENERATED_BODY()
 

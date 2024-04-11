@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
 #include "InputMappingContext.h"
+#include "ModularCharacter.h"
 #include "SCharacter.generated.h"
 
 class USActionComponent;
@@ -15,7 +15,7 @@ class UCameraComponent;
 class USInteractionComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API ASCharacter : public ACharacter
+class ACTIONROGUELIKE_API ASCharacter : public AModularCharacter
 {
 	GENERATED_BODY()
 
