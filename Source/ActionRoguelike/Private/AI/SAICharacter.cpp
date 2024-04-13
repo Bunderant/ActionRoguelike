@@ -111,8 +111,6 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 
 void ASAICharacter::MulticastNotifyPawnSeen_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("SEEN"));
-	
 	if (AlertWidgetInstance == nullptr)
 	{
 		AlertWidgetInstance = CreateWidget<USWorldCommonUserWidget>(GetWorld(), AlertWidgetClass);
