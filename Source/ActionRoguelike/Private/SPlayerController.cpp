@@ -39,7 +39,7 @@ void ASPlayerController::TogglePauseMenu()
 {
 	if (PauseMenuInstance == nullptr)
 	{
-		PauseMenuInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(GetLocalPlayer(), PauseMenuLayer, PauseMenuClass.Get());
+		PauseMenuInstance = UCommonUIExtensions::PushContentToLayer_ForPlayer(GetLocalPlayer(), PauseMenuLayer, PauseMenuClass);
 		Pause();
 	}
 	else

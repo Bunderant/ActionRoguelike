@@ -37,7 +37,7 @@ public:
 	FGameplayTag PauseMenuLayer;
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
-	TSoftClassPtr<USCommonActivatableWidget> PauseMenuClass;
+	TSubclassOf<USCommonActivatableWidget> PauseMenuClass;
 
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSoftObjectPtr<UInputAction> InputActionTogglePause;
