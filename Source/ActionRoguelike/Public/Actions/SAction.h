@@ -38,6 +38,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FGameplayTagContainer BlockedTags;
+
+	float TimeStarted;
 	
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Actions")

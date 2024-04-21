@@ -52,6 +52,19 @@ void USActionEffect::StopAction_Implementation(AActor* Instigator)
 	}
 }
 
+float USActionEffect::GetRemainingTime() const
+{
+	const float EndTime = TimeStarted + Duration;
+	return EndTime - GetWorld()->TimeSeconds;
+}
+
+float USActionEffect::GetRemainingTimeNormalized() const
+{
+	return FMath::IsNearlyZero(Duration)
+		? 0.0f
+		: GetRemainingTime() / Duration;
+}
+
 void USActionEffect::OnPeriodElapsed_Implementation(AActor* Instigator)
 {
 }

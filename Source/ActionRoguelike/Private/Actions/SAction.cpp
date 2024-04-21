@@ -19,6 +19,8 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 	RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
 
+	TimeStarted = GetWorld()->TimeSeconds;
+
 	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(), this);
 }
 
