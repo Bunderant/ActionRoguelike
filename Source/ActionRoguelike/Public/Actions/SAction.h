@@ -30,6 +30,9 @@ class ACTIONROGUELIKE_API USAction : public UObject
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="UI")
+	TObjectPtr<UTexture2D> IconTexture;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Actions")
 	FGameplayTagContainer GrantedTags;
 	
