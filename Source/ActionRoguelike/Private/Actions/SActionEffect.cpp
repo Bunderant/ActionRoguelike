@@ -4,6 +4,7 @@
 #include "Actions/SActionEffect.h"
 
 #include "Actions/SActionComponent.h"
+#include "GameFramework/GameStateBase.h"
 
 USActionEffect::USActionEffect()
 {
@@ -54,8 +55,14 @@ void USActionEffect::StopAction_Implementation(AActor* Instigator)
 
 float USActionEffect::GetRemainingTime() const
 {
-	const float EndTime = TimeStarted + Duration;
-	return EndTime - GetWorld()->TimeSeconds;
+	if (const AGameStateBase* GameState = GetWorld()->GetGameState())
+	{
+		const float EndTime = TimeStarted + Duration;
+		return EndTime - GameState->GetServerWorldTimeSeconds();
+	}
+
+	// Fall back to returning the full duration in case the game state hasn't been replicated yet
+	return Duration;
 }
 
 float USActionEffect::GetRemainingTimeNormalized() const

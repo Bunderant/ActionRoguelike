@@ -5,6 +5,7 @@
 
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/SActionComponent.h"
+#include "GameFramework/GameStateBase.h"
 #include "Net/UnrealNetwork.h"
 
 static FAutoConsoleVariable CVarLogActionEnabled(TEXT("su.logActionsVerbose"), false, TEXT("Toggles on-screen Action logging."), ECVF_Cheat);
@@ -19,7 +20,10 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 	RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
 
-	TimeStarted = GetWorld()->TimeSeconds;
+	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
+	{
+		TimeStarted = GetWorld()->TimeSeconds;
+	}
 
 	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(), this);
 }
@@ -75,4 +79,5 @@ void USAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty> &OutLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(USAction, RepData);
+	DOREPLIFETIME(USAction, TimeStarted);
 }
