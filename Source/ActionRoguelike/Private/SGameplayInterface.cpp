@@ -4,3 +4,7 @@
 #include "SGameplayInterface.h"
 
 // Add default functionality here for any ISGameplayInterface functions that are not pure virtual.
+FText GetInteractText_Implementation(AActor* InstigatorActor)
+{
+	return FText::GetEmpty();
+}

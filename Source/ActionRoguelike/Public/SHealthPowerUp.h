@@ -20,6 +20,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float HealthAmount;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 CreditCost;
+
 	virtual bool CheckCanInteract(const APawn* InstigatorPawn) override;
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 	virtual void Apply(APawn* InstigatorPawn) override;
 };

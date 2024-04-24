@@ -29,10 +29,13 @@ public:
 	FOnCreditsValueChanged OnCreditsValueChanged;
 	
 	UFUNCTION(BlueprintCallable, Category="Credits")
-	bool IncrementCredits();
+	bool IncrementCredits(int32 Amount);
 	
 	UFUNCTION(BlueprintCallable, Category="Credits")
-	bool DecrementCredits();
+	bool DecrementCredits(int32 Amount);
+
+	UFUNCTION(BlueprintCallable, Category="Credits")
+	bool ApplyCredits(int32 Delta);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastCreditsChanged(float Value, float Delta);

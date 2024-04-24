@@ -17,28 +17,67 @@ void ASPlayerState::ClearNonPersistentState()
 	UE_LOG(LogTemp, Warning, TEXT("Clearing non-persistent player state."));
 }
 
-bool ASPlayerState::IncrementCredits()
+bool ASPlayerState::IncrementCredits(const int32 Amount)
 {
+	if (!ensureAlways(Amount > 0))
+	{
+		return false;
+	}
+	
 	if (NumCredits == MAX_int32)
 	{
 		return false;
 	}
+
+	const int32 PrevNumCredits = NumCredits;
+	NumCredits = FMath::Clamp(NumCredits + Amount, 0, MAX_int32);
+
+	if (NumCredits != PrevNumCredits)
+	{
+		MulticastCreditsChanged(NumCredits, NumCredits - PrevNumCredits);
+		return true;
+	}
 	
-	NumCredits++;
-	MulticastCreditsChanged(NumCredits, 1);
-	return true;
+	return false;
 }
 
-bool ASPlayerState::DecrementCredits()
+bool ASPlayerState::DecrementCredits(const int32 Amount)
 {
-	if (NumCredits == 0)
+	if (!ensureAlways(Amount > 0))
 	{
 		return false;
 	}
 	
-	NumCredits--;
-	MulticastCreditsChanged(NumCredits, -1);
-	return true;
+	if (NumCredits < Amount)
+	{
+		return false;
+	}
+
+	const int32 PrevNumCredits = NumCredits;
+	NumCredits = FMath::Clamp(NumCredits - Amount, 0, MAX_int32);
+	
+	if (NumCredits != PrevNumCredits)
+	{
+		MulticastCreditsChanged(NumCredits, NumCredits - PrevNumCredits);
+		return true;
+	}
+	
+	return false;
+}
+
+bool ASPlayerState::ApplyCredits(int32 Delta)
+{
+	if (!ensureAlways(Delta != 0))
+	{
+		return false;
+	}
+
+	if (Delta > 0)
+	{
+		return IncrementCredits(Delta);
+	}
+
+	return DecrementCredits(-Delta);
 }
 
 void ASPlayerState::MulticastCreditsChanged_Implementation(float Value, float Delta)

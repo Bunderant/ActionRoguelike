@@ -228,7 +228,7 @@ void ASGameModeBase::OnActorKilled(AActor* Victim, AActor* Killer)
 	if (const ASCharacter* KillerPlayer = Cast<ASCharacter>(Killer); KillerPlayer && Victim->IsA(ASAICharacter::StaticClass()))
 	{
 		ASPlayerState* PlayerState = KillerPlayer->GetPlayerState<ASPlayerState>();
-		PlayerState->IncrementCredits();
+		PlayerState->IncrementCredits(1);
 	}
 }
 

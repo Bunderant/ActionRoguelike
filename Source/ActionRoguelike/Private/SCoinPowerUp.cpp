@@ -20,7 +20,7 @@ void ASCoinPowerUp::Apply(APawn* InstigatorPawn)
 		return;
 	}
 	
-	PlayerState->IncrementCredits();
+	PlayerState->IncrementCredits(1);
 
 	Hide();
 	StartCooldownTimer();
