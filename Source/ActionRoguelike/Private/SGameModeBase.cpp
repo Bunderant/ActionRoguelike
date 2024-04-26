@@ -10,6 +10,7 @@
 #include "SMonsterData.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
+#include "Actions/SActionComponent.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
@@ -208,7 +209,17 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 		int32 MonsterIdx = FMath::RandRange(0, Rows.Num() - 1);
 		const FMonsterInfoRow* Info = Rows[MonsterIdx];
 
-		GetWorld()->SpawnActor<AActor>(Info->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator);
+		AActor* MonsterInstance = GetWorld()->SpawnActor<AActor>(Info->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator);
+		if (MonsterInstance && Info->MonsterData->Actions.Num() > 0)
+		{
+			if (USActionComponent* ActionComp = MonsterInstance->FindComponentByClass<USActionComponent>())
+			{
+				for (auto ActionClass : Info->MonsterData->Actions)
+				{
+					ActionComp->AddAction(MonsterInstance, ActionClass);
+				}
+			}
+		}
 	}
 }
 
