@@ -3,12 +3,43 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "ModularGameMode.h"
 #include "SGameModeBase.generated.h"
 
+class USMonsterData;
 class USSaveGame;
 struct FEnvQueryResult;
 class UEnvQuery;
+
+USTRUCT(BlueprintType)
+struct FMonsterInfoRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	FMonsterInfoRow()
+	{
+		SpawnProbabilityWeight = 1.0f;
+		SpawnCost = 5.0f;
+		KillReward = 20.0f;
+	}
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<USMonsterData> MonsterData;
+
+	/* Relative chance to pick this monster */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnProbabilityWeight;
+
+	/* Points required by the game mode to spawn an instance */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnCost;
+
+	/* Credits awarded to the player for killing an instance of this monster */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float KillReward;
+};
+
 /**
  * 
  */
@@ -51,8 +82,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Power-ups")
 	int32 NumStartupCoinPowerUps;
 
+	/* All available monsters */
 	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TSubclassOf<AActor> BotClass;
+	TObjectPtr<UDataTable> MonsterTable;
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TObjectPtr<UCurveFloat> BotMaxCountCurve;

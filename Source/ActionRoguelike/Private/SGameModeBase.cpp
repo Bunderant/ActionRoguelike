@@ -7,6 +7,7 @@
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
 #include "SGameplayInterface.h"
+#include "SMonsterData.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
 #include "AI/SAICharacter.h"
@@ -196,10 +197,19 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 	{
 		return;
 	}
-
-	DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 	
-	GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
+	// DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+
+	if (MonsterTable) // @todo: "ensure", this should always be assigned and have at least one row
+	{
+		TArray<FMonsterInfoRow*> Rows;
+		MonsterTable->GetAllRows("", Rows);
+
+		int32 MonsterIdx = FMath::RandRange(0, Rows.Num() - 1);
+		const FMonsterInfoRow* Info = Rows[MonsterIdx];
+
+		GetWorld()->SpawnActor<AActor>(Info->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator);
+	}
 }
 
 void ASGameModeBase::RespawnPlayerDelayed(AController* PlayerController)
