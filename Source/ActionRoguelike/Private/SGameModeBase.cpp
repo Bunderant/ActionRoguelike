@@ -211,35 +211,33 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 		int32 MonsterIdx = FMath::RandRange(0, Rows.Num() - 1);
 		const FMonsterInfoRow* Info = Rows[MonsterIdx];
 
-		if (UAssetManager* Manager = UAssetManager::GetIfInitialized())
-		{
-			LogToScreen(this, "Loading monster...", FColor::Green);
-			
-			TArray<FName> Bundles; // Unused, just keeping the loading API happy
-			FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ASGameModeBase::OnMonsterLoaded, Info->MonsterId, Locations[0]);
-			Manager->LoadPrimaryAsset(Info->MonsterId, Bundles, Delegate);
-		}
+		UAssetManager& Manager = UAssetManager::Get();
+
+		LogToScreen(this, "Loading monster...", FColor::Green);
+		
+		TArray<FName> Bundles; // Unused, just keeping the loading API happy
+		FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ASGameModeBase::OnMonsterLoaded, Info->MonsterId, Locations[0]);
+		Manager.LoadPrimaryAsset(Info->MonsterId, Bundles, Delegate);
 	}
 }
 
 void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId MonsterId, FVector Location)
 {
 	LogToScreen(this, "Finished loading.", FColor::Green);
-	if (UAssetManager* Manager = UAssetManager::GetIfInitialized())
+	const UAssetManager& Manager = UAssetManager::Get();
+	
+	USMonsterData* MonsterData = Manager.GetPrimaryAssetObject<USMonsterData>(MonsterId);
+	if (!ensure(MonsterData))
+		return;
+	
+	AActor* MonsterInstance = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, Location, FRotator::ZeroRotator);
+	if (MonsterInstance && MonsterData->Actions.Num() > 0)
 	{
-		USMonsterData* MonsterData = Manager->GetPrimaryAssetObject<USMonsterData>(MonsterId);
-		if (!ensure(MonsterData))
-			return;
-		
-		AActor* MonsterInstance = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, Location, FRotator::ZeroRotator);
-		if (MonsterInstance && MonsterData->Actions.Num() > 0)
+		if (USActionComponent* ActionComp = MonsterInstance->FindComponentByClass<USActionComponent>())
 		{
-			if (USActionComponent* ActionComp = MonsterInstance->FindComponentByClass<USActionComponent>())
+			for (auto ActionClass : MonsterData->Actions)
 			{
-				for (auto ActionClass : MonsterData->Actions)
-				{
-					ActionComp->AddAction(MonsterInstance, ActionClass);
-				}
+				ActionComp->AddAction(MonsterInstance, ActionClass);
 			}
 		}
 	}
