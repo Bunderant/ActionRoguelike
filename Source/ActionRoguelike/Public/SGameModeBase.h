@@ -7,7 +7,6 @@
 #include "ModularGameMode.h"
 #include "SGameModeBase.generated.h"
 
-class USMonsterData;
 class USSaveGame;
 struct FEnvQueryResult;
 class UEnvQuery;
@@ -25,7 +24,7 @@ struct FMonsterInfoRow : public FTableRowBase
 	}
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<USMonsterData> MonsterData;
+	FPrimaryAssetId MonsterId;
 
 	/* Relative chance to pick this monster */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -104,6 +103,9 @@ protected:
 	void OnPowerUpSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
 
 	void OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result);
+
+	UFUNCTION()
+	void OnMonsterLoaded(FPrimaryAssetId MonsterId, FVector Location);
 
 	UFUNCTION()
 	void RespawnPlayerDelayed(AController* PlayerController);

@@ -10,8 +10,10 @@
 #include "SMonsterData.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "Actions/SActionComponent.h"
 #include "AI/SAICharacter.h"
+#include "Engine/AssetManager.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -205,16 +207,36 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(TSharedPtr<FEnvQueryResult> Result
 	{
 		TArray<FMonsterInfoRow*> Rows;
 		MonsterTable->GetAllRows("", Rows);
-
+	
 		int32 MonsterIdx = FMath::RandRange(0, Rows.Num() - 1);
 		const FMonsterInfoRow* Info = Rows[MonsterIdx];
 
-		AActor* MonsterInstance = GetWorld()->SpawnActor<AActor>(Info->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator);
-		if (MonsterInstance && Info->MonsterData->Actions.Num() > 0)
+		if (UAssetManager* Manager = UAssetManager::GetIfInitialized())
+		{
+			LogToScreen(this, "Loading monster...", FColor::Green);
+			
+			TArray<FName> Bundles; // Unused, just keeping the loading API happy
+			FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ASGameModeBase::OnMonsterLoaded, Info->MonsterId, Locations[0]);
+			Manager->LoadPrimaryAsset(Info->MonsterId, Bundles, Delegate);
+		}
+	}
+}
+
+void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId MonsterId, FVector Location)
+{
+	LogToScreen(this, "Finished loading.", FColor::Green);
+	if (UAssetManager* Manager = UAssetManager::GetIfInitialized())
+	{
+		USMonsterData* MonsterData = Manager->GetPrimaryAssetObject<USMonsterData>(MonsterId);
+		if (!ensure(MonsterData))
+			return;
+		
+		AActor* MonsterInstance = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, Location, FRotator::ZeroRotator);
+		if (MonsterInstance && MonsterData->Actions.Num() > 0)
 		{
 			if (USActionComponent* ActionComp = MonsterInstance->FindComponentByClass<USActionComponent>())
 			{
-				for (auto ActionClass : Info->MonsterData->Actions)
+				for (auto ActionClass : MonsterData->Actions)
 				{
 					ActionComp->AddAction(MonsterInstance, ActionClass);
 				}
