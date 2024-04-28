@@ -98,6 +98,9 @@ bool USActionComponent::StartActionByName(AActor* Instigator, const FName Action
 			{
 				ServerStartAction(Instigator, ActionName);
 			}
+
+			// Bookmark for Unreal Insights
+			TRACE_BOOKMARK(TEXT("StartAction::%s"), *GetNameSafe(Action));
 			
 			Action->StartAction(Instigator);
 			return true;
