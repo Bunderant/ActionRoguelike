@@ -4,4 +4,7 @@
 #include "SMagicProjectile.h"
 
 // Sets default values
-ASMagicProjectile::ASMagicProjectile() { }
+ASMagicProjectile::ASMagicProjectile()
+{
+	InitialLifeSpan = 10.0f;
+}
