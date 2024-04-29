@@ -14,7 +14,7 @@ ASPlayerState::ASPlayerState()
 
 void ASPlayerState::ClearNonPersistentState()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Clearing non-persistent player state."));
+	UE_LOG(LogTemp, Log, TEXT("Clearing non-persistent player state."));
 }
 
 bool ASPlayerState::IncrementCredits(const int32 Amount)
