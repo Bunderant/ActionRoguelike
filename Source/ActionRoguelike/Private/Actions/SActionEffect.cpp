@@ -68,7 +68,7 @@ float USActionEffect::GetRemainingTime() const
 float USActionEffect::GetRemainingTimeNormalized() const
 {
 	return FMath::IsNearlyZero(Duration)
-		? 0.0f
+		? 1.0f // Duration of '0' effectively means "infinite"
 		: GetRemainingTime() / Duration;
 }
 
