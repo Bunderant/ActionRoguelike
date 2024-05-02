@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "ModularPlayerState.h"
-#include "SSaveGame.h"
 #include "SPlayerState.generated.h"
 
 class USSaveGame;
@@ -47,7 +46,7 @@ public:
 	void WriteToSavedGame(USSaveGame* SaveGameObject) const;
 
 	UFUNCTION(BlueprintNativeEvent, Category="Save/Load")
-	void LoadFromSavedGame(const USSaveGame* SaveGameObject);
+	void LoadFromSavedGame(USSaveGame* SaveGameObject);
 	
 protected:
 	UPROPERTY(VisibleInstanceOnly, Replicated, Category="Credits")

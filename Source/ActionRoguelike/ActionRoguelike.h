@@ -6,6 +6,9 @@
 
 DECLARE_STATS_GROUP(TEXT("STANFORD_Game"), STATGROUP_STANFORD, STATCAT_Advanced);
 
+// Define category "LogGame"
+ACTIONROGUELIKE_API DECLARE_LOG_CATEGORY_EXTERN(LogGame, Log, All);
+
 inline void LogToScreen(const UObject* WorldContext, const FString& DebugMsg, const FColor Color = FColor::White, const float Duration = 5.0f)
 {
 	if (!ensureMsgf(!DebugMsg.IsEmpty(), TEXT("Attempting to log empty string. Watchoo doing.")))

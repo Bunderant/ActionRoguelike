@@ -21,6 +21,35 @@ struct FActorSaveData
 	TArray<uint8> ByteData;
 };
 
+USTRUCT()
+struct FPlayerSaveData
+{
+	GENERATED_BODY()
+
+	FPlayerSaveData()
+	{
+		Credits = 0;
+		Location = FVector::ZeroVector;
+		Rotation = FRotator::ZeroRotator;
+		bUseSavedTransform = true;
+	}
+
+	UPROPERTY()
+	FString PlayerID;
+
+	UPROPERTY()
+	int32 Credits;
+
+	UPROPERTY()
+	FVector Location;
+
+	UPROPERTY()
+	FRotator Rotation;
+
+	UPROPERTY()
+	bool bUseSavedTransform;
+};
+
 /**
  * 
  */
@@ -31,8 +60,10 @@ class ACTIONROGUELIKE_API USSaveGame : public USaveGame
 
 public:
 	UPROPERTY()
-	int32 Credits;
+	TArray<FPlayerSaveData> SavedPlayers;
 
 	UPROPERTY()
 	TArray<FActorSaveData> SavedActors;
+
+	FPlayerSaveData* GetPlayerData(APlayerState* PlayerState);
 };

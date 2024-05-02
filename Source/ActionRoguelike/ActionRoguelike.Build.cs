@@ -21,7 +21,8 @@ public class ActionRoguelike : ModuleRules
 			"UMG",
 			"GameplayTags",
 			"ModularGameplay",
-			"ModularGameplayActors"
+			"ModularGameplayActors",
+			"DeveloperSettings"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

@@ -7,7 +7,6 @@
 #include "ModularGameMode.h"
 #include "SGameModeBase.generated.h"
 
-class USSaveGame;
 struct FEnvQueryResult;
 class UEnvQuery;
 
@@ -56,15 +55,11 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AModularGameMode
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
 public:
+	
 	UFUNCTION(BlueprintCallable, Category="Game Mode")
 	static ASGameModeBase* Get(const AActor* WorldContextObject);
 	
 protected:
-
-	FString SaveSlot;
-
-	UPROPERTY()
-	TObjectPtr<USSaveGame> CurrentSaveGame;
 
 	UPROPERTY(EditAnywhere, Category="Power-ups")
 	TSubclassOf<AActor> HealthPowerUpClass;
@@ -116,10 +111,4 @@ public:
 
 	UFUNCTION(Exec)
 	void KillAll();
-
-	UFUNCTION(BlueprintCallable, Category="Save/Load")
-	void SaveGame();
-
-	UFUNCTION()
-	void LoadGame();
 };
