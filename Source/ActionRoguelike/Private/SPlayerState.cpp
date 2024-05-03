@@ -24,7 +24,8 @@ bool ASPlayerState::IncrementCredits(const int32 Amount)
 	{
 		return false;
 	}
-	
+
+	// @fixme: access violation reported here. I think it was due to a dying enemy incrementing credits on an already-dead player
 	if (NumCredits == MAX_int32)
 	{
 		return false;
