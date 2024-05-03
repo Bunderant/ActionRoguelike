@@ -100,9 +100,9 @@ void ASCharacter::UnbindInput_Implementation()
 	}
 }
 
-void ASCharacter::Move(const FInputActionInstance& Instance)
+void ASCharacter::Move(const FInputActionValue& InputValue)
 {
-	const FVector2D Value = Instance.GetValue().Get<FVector2D>();
+	const FVector2D Value = InputValue.Get<FVector2D>();
 
 	FRotator ControlRotation = GetControlRotation();
 	ControlRotation.Pitch = 0.0f;
@@ -115,42 +115,42 @@ void ASCharacter::Move(const FInputActionInstance& Instance)
 	AddMovementInput(RightVector, Value.X);
 }
 
-void ASCharacter::MoveCamera(const FInputActionInstance& Instance)
+void ASCharacter::MoveCamera(const FInputActionValue& InputValue)
 {
-	const FVector2D Value = Instance.GetValue().Get<FVector2D>();
+	const FVector2D Value = InputValue.Get<FVector2D>();
 	
 	AddControllerPitchInput(Value.Y);
 	AddControllerYawInput(Value.X);
 }
 
-void ASCharacter::PrimaryAttack(const FInputActionInstance& Instance)
+void ASCharacter::PrimaryAttack()
 {
 	ActionComponent->StartActionByName(this, "PrimaryAttack");
 }
 
-void ASCharacter::SecondaryAttack(const FInputActionInstance& Instance)
+void ASCharacter::SecondaryAttack()
 {
 	ActionComponent->StartActionByName(this, "SecondaryAttack");
 }
 
-void ASCharacter::UltimateAttack(const FInputActionInstance& Instance)
+void ASCharacter::UltimateAttack()
 {
 	ActionComponent->StartActionByName(this, "UltimateAttack");
 }
 
-void ASCharacter::HandleJumpInput(const FInputActionInstance& Instance)
+void ASCharacter::HandleJumpInput()
 {
 	Jump();
 }
 
-void ASCharacter::HandleInteractInput(const FInputActionInstance& Instance)
+void ASCharacter::HandleInteractInput()
 {
 	InteractionComponent->PrimaryInteract();
 }
 
-void ASCharacter::OnSecondaryMovementInputTriggered(const FInputActionInstance& Instance)
+void ASCharacter::OnSecondaryMovementInputTriggered(const FInputActionValue& InputValue)
 {
-	if (Instance.GetValue().Get<bool>())
+	if (InputValue.Get<bool>())
 	{
 		ActionComponent->StartActionByName(this, "Sprint");
 	}
@@ -160,7 +160,7 @@ void ASCharacter::OnSecondaryMovementInputTriggered(const FInputActionInstance& 
 	}
 }
 
-void ASCharacter::OnParryInputTriggered(const FInputActionInstance& Instance)
+void ASCharacter::OnParryInputTriggered()
 {
 	ActionComponent->StartActionByName(this, "Parry");
 }

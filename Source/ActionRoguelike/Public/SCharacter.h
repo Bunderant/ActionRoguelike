@@ -86,15 +86,15 @@ protected:
 
 	virtual void UnPossessed() override;
 
-	void Move(const FInputActionInstance& Instance);
-	void MoveCamera(const FInputActionInstance& Instance);
-	void PrimaryAttack(const FInputActionInstance& Instance);
-	void SecondaryAttack(const FInputActionInstance& Instance);
-	void UltimateAttack(const FInputActionInstance& Instance);
-	void HandleJumpInput(const FInputActionInstance& Instance);
-	void HandleInteractInput(const FInputActionInstance& Instance);
-	void OnSecondaryMovementInputTriggered(const FInputActionInstance& Instance);
-	void OnParryInputTriggered(const FInputActionInstance& Instance);
+	void Move(const FInputActionValue& InputValue);
+	void MoveCamera(const FInputActionValue& InputValue);
+	void PrimaryAttack();
+	void SecondaryAttack();
+	void UltimateAttack();
+	void HandleJumpInput();
+	void HandleInteractInput();
+	void OnSecondaryMovementInputTriggered(const FInputActionValue& InputValue);
+	void OnParryInputTriggered();
 
 	UFUNCTION()
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComponent, float Value, float Delta);
