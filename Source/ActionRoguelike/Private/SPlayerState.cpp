@@ -102,7 +102,7 @@ void ASPlayerState::WriteToSavedGame_Implementation(USSaveGame* SaveGameObject) 
 	SaveData.Credits = NumCredits;
 
 	// Stored as FString for simplicity (original Steam ID is uint64)
-	SaveData.PlayerID = GetUniqueId().ToString();
+	SaveData.PlayerID = GetUniqueId()->ToString();
 
 	// May not be alive while we save
 	if (APawn* MyPawn = GetPawn())

@@ -4,6 +4,7 @@
 #include "SExplosiveBarrel.h"
 
 #include "SAttributeComponent.h"
+#include "Engine/OverlapResult.h"
 #include "PhysicsEngine/RadialForceComponent.h"
 
 
